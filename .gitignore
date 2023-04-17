@@ -1,0 +1,13 @@
+node_modules
+
+# output build
+lib
+dist
+build
+logs
+
+# output test
+coverage
+
+# env
+.env
