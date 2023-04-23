@@ -13,7 +13,7 @@ export class RecipeModel extends Model<Recipe, RecipeModelInput> {
 
   public title!: string;
   public description!: string;
-  public thumbanail_url!: string;
+  public thumbnail_url!: string;
   public video_url?: string;
 
   public cookingTime!: number;
@@ -52,7 +52,7 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
       type: dataTypes.STRING,
       allowNull: false,
     },
-    thumbanail_url: {
+    thumbnail_url: {
       type: dataTypes.STRING,
       allowNull: false,
     },

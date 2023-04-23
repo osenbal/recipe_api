@@ -27,6 +27,7 @@ export default class MySQLUserDataSource implements UserDataSource {
   }
 
   async getUserById(id: number): Promise<UserModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
     return result;
   }
@@ -40,7 +41,8 @@ export default class MySQLUserDataSource implements UserDataSource {
   }
 
   async updateUser(user: User, t?: Transaction): Promise<boolean> {
-    const result = await this.db.update(user.id, user, t);
+    if (!this.db.updateById) return false;
+    const result = await this.db.updateById(user.id, user, t);
     return result !== null;
   }
 }

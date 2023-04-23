@@ -21,6 +21,7 @@ export default class MySQLRoleDataSource implements RoleDataSource {
   }
 
   async getRoleById(id: number): Promise<RoleModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
     return result;
   }

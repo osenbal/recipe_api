@@ -27,13 +27,15 @@ export default class MySQLCommonUserDataSource implements CommonUserDataSource {
   }
 
   async getCommonUserById(id: number): Promise<CommonUserModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
     return result;
   }
 
   async updateCommonUser(data: CommonUser, t?: Transaction): Promise<boolean> {
     if (!data.id) throw new Error("id is required");
-    const result = await this.db.update(data.id, data, t);
+    if (!this.db.updateById) return false;
+    const result = await this.db.updateById(data.id, data, t);
     return result !== null;
   }
 }

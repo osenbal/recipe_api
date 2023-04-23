@@ -21,7 +21,9 @@ export default class MySQLPermissionDataSource implements PermissionDataSource {
   }
 
   async getPermissionById(id: number): Promise<PermissionModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
+
     return result;
   }
 }

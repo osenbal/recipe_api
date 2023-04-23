@@ -16,6 +16,7 @@ export default class MySQLDishDataSource implements DishDataSource {
   }
 
   async getDishById(id: number): Promise<DishModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
     return result;
   }
@@ -26,7 +27,8 @@ export default class MySQLDishDataSource implements DishDataSource {
   }
 
   async deleteDishById(id: number): Promise<boolean> {
-    const result = await this.db.destroy(id);
+    if (!this.db.destroyById) return false;
+    const result = await this.db.destroyById(id);
     return result !== null;
   }
 }

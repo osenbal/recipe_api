@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import server from "./server";
 import morgan from "morgan";
-import { AuthRouter, UserRouter } from "./presentation/routers/";
+import { AuthRouter, UserRouter, RecipeRouter } from "./presentation/routers/";
 
 import MYSQLDataSources from "./data/data-sources/mysql";
 
@@ -16,6 +16,14 @@ import { UserRepositoryImpl } from "./domain/repositories/user-repository";
 import { RoleRepositoryImpl } from "./domain/repositories/role-repository";
 import { ChefRepositoryImpl } from "./domain/repositories/chef-repository";
 import { CommonUserRepositoryImpl } from "./domain/repositories/commonUser-repository";
+import { IngredientRepositoryImpl } from "@domain/repositories/recipe/ingredient-repository";
+import { RecipeIngredientRepositoryImpl } from "@domain/repositories/recipe/recipeIngredient-repository";
+
+import { RecipeRepositoryImpl } from "@domain/repositories/recipe/recipe-repository";
+import { ListRecipeUseCaseImpl } from "@domain/use-cases/recipe/list-recipe";
+import { DetailRecipeUseCaseImpl } from "@domain/use-cases/recipe/detail-recipe";
+import { CreateRecipeUseCaseImpl } from "@domain/use-cases/recipe/create-recipe";
+
 import { MySQLTransactionsUtilRepositoryImpl } from "./domain/repositories/utils/mysqlTransaction-util-repository";
 
 import MySQLTransactionsUtil from "./data/data-sources/mysql/utils/mysql-transactions-util";
@@ -24,6 +32,7 @@ import { sequelize } from "./infrastructure/db/sequelize";
 import { logger, stream } from "./utils/logger";
 import * as Sentry from "@sentry/node";
 import SentryInit from "./utils/monitoring/sentry";
+import { InstructionRepositryImpl } from "@domain/repositories/recipe/instruction-repository";
 // import dbInit from "./infrastructure/db/init";
 dotenv.config();
 
@@ -65,6 +74,23 @@ async function connectToDB() {
     new AssignRoleToUser(new UserRepositoryImpl(userDataSource))
   );
 
+  const recipeRouter = RecipeRouter(
+    new ListRecipeUseCaseImpl(
+      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource())
+    ),
+    new DetailRecipeUseCaseImpl(
+      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource())
+    ),
+    new CreateRecipeUseCaseImpl(
+      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource()),
+      new RecipeIngredientRepositoryImpl(
+        mysqlDataSource.getRecipeIngredientDataSource()
+      ),
+      new InstructionRepositryImpl(mysqlDataSource.getInstructionDataSource()),
+      new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil())
+    )
+  );
+
   // MONITORING SENTRY
   if (process.env.NODE_ENV === "production") {
     SentryInit(Sentry, server, `${process.env.SENTRY_URL}`);
@@ -74,10 +100,12 @@ async function connectToDB() {
 
   // middlewares
   server.use(morgan("combined", { stream }));
+  // for parsing application/json
 
   // routes
   server.use("/auth", authRouter);
   server.use("/user", userRouter);
+  server.use("/recipe", recipeRouter);
 
   // The error handler must be before any other error middleware and after all controllers
   if (process.env.NODE_ENV === "production") {

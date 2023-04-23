@@ -86,7 +86,6 @@ export class RegisterUser implements RegisterUserUseCase {
       await t.commit();
       return newUser !== null;
     } catch (error) {
-      console.log("Transaction Mysql Error ", error);
       await this.mySQLTransactionsUtilRepository.rollbackTransaction();
       throw error;
     }

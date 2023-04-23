@@ -16,6 +16,8 @@ export default class MySQLCategoryDataSource implements CategoryDataSource {
   }
 
   async getCategoryById(id: number): Promise<CategoryModel | null> {
+    if (!this.db.findPk) return null;
+
     const result = await this.db.findPk(id);
     return result;
   }
@@ -26,7 +28,9 @@ export default class MySQLCategoryDataSource implements CategoryDataSource {
   }
 
   async deleteCategoryById(id: number): Promise<boolean> {
-    const result = await this.db.destroy(id);
+    if (!this.db.destroyById) return false;
+
+    const result = await this.db.destroyById(id);
     return result !== null;
   }
 }

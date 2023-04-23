@@ -193,6 +193,12 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        id: 31,
+        name: "item",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

@@ -10,7 +10,7 @@ export default interface Recipe {
   // Attributes
   title: string;
   description: string;
-  thumbanail_url: string;
+  thumbnail_url: string;
   video_url?: string;
 
   cookingTime: number;

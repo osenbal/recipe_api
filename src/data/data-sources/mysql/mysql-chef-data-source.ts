@@ -22,6 +22,7 @@ export default class MySQLChefDataSource implements ChefDataSource {
     return result;
   }
   async getUserChefById(id: number): Promise<ChefModel | null> {
+    if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);
     return result;
   }
@@ -30,8 +31,8 @@ export default class MySQLChefDataSource implements ChefDataSource {
     t?: Transaction | undefined
   ): Promise<boolean> {
     if (!data.id) throw new Error("id is required");
-
-    const rseult = await this.db.update(data.id, data, t);
+    if (!this.db.updateById) return false;
+    const rseult = await this.db.updateById(data.id, data, t);
     return rseult !== null;
   }
 }

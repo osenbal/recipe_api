@@ -46,7 +46,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      thumbanail_url: {
+      thumbnail_url: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -55,6 +55,10 @@ module.exports = {
         allowNull: true,
       },
       cookingTime: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      prepTime: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
       },
