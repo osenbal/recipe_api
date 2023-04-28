@@ -26,4 +26,15 @@ export class InstructionRepositryImpl implements InstructionRepositry {
     const result = await this.instructionDataSource.addBulkInstruction(data, t);
     return result;
   }
+
+  async updateBulkInstructions(
+    data: Instruction[],
+    t?: Transaction
+  ): Promise<Instruction[] | null> {
+    const result = await this.instructionDataSource.updateBulkInstruction(
+      data,
+      t
+    );
+    return result;
+  }
 }

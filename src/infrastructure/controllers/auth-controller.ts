@@ -69,7 +69,11 @@ export default class AuthController {
   ) => Promise<void> {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const result = await this.refreshToken.execute(req.body.userId);
+        const result = await this.refreshToken.execute(
+          req.body.userId,
+          req.body.role_id
+        );
+
         res
           .status(200)
           .send(ResponseObj.success("Token refreshed successfully", result));

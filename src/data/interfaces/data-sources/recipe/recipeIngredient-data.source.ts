@@ -11,20 +11,22 @@ export interface RecipeIngredientDataSource {
     recipeIngredients: RecipeIngredient[],
     t?: Transaction
   ): Promise<RecipeIngredientModel[] | null>;
-  getAllRecipeIngredient(): Promise<RecipeIngredientModel[] | null>;
 
+  getAllRecipeIngredient(): Promise<RecipeIngredientModel[] | null>;
   getRecipeIngredientByRecipeId(
     recipe_id: number
   ): Promise<RecipeIngredientModel[] | null>;
-
   getAllRecipeIngredientByRecipeIds(
     recipe_ids: number[]
   ): Promise<RecipeIngredientModel[] | null>;
 
-  deleteRecipeIngredientByRecipeId(recipe_id: number): Promise<boolean>;
+  deleteRecipeIngredientByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean>;
 
-  updateBulkRecipeIngredientByRecipeId(
+  updateBulkRecipeIngredient(
     recipeIngredients: RecipeIngredient[],
-    recipe_ids: number[]
+    t?: Transaction
   ): Promise<RecipeIngredientModel[] | null>;
 }

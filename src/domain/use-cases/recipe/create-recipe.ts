@@ -11,7 +11,7 @@ import {
 } from "@domain/interfaces/http/request-body/recipe";
 import Recipe from "@domain/entities/recipe/recipe";
 import RecipeIngredient from "@domain/entities/recipe/recipe_ingredient";
-import Instruction from "@domain/entities/recipe/instruction";
+// import Instruction from "@do/main/entities/recipe/instruction";
 
 export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
   recipeRepository: RecipeRepository;
@@ -57,7 +57,9 @@ export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
     const t = await this.mySQLTransactionsUtilRepository.beginTransaction();
     try {
       const newRecipe = await this.recipeRepository.addRecipe(recipe, t);
+
       if (!newRecipe) throw new Error("Failed to create recipe");
+
       const ingredients: RecipeIngredient[] = data.ingredients.map(
         (ingredient: ICreateRecipeIngredientRequestBody) => ({
           ...ingredient,

@@ -5,4 +5,6 @@ export interface RoleRepository {
   addRole(role: Role): Promise<boolean>;
   getRoleById(id: number): Promise<RoleModel | null>;
   isRoleExist(role_title: string): Promise<boolean>;
+
+  getRoleWithPermissionsById(id: number): Promise<any | null>;
 }

@@ -28,5 +28,6 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   return RolePermissionModel.init(rolePermissionAttributes, {
     sequelize,
     tableName: "role_permission",
+    timestamps: false,
   });
 };

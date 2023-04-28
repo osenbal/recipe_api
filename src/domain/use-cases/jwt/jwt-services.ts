@@ -35,4 +35,12 @@ export class JwtService implements JwtServiceUseCase {
   public verifyRefreshToken(token: string): JwtPayload {
     return jwt.verify(token, this.refreshTokenKey) as JwtPayload;
   }
+
+  public decodeAccessToken(token: string): JwtPayload {
+    return jwt.decode(token) as JwtPayload;
+  }
+
+  public decodeRefreshToken(token: string): JwtPayload {
+    return jwt.decode(token) as JwtPayload;
+  }
 }

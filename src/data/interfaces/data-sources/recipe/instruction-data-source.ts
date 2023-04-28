@@ -18,12 +18,13 @@ export interface InstructionDataSource {
   ): Promise<InstructionModel | null>;
 
   updateBulkInstructionById(
-    instructions: Instruction[]
+    instructions: Instruction[],
+    t?: Transaction
   ): Promise<InstructionModel[] | null>;
 
-  updateBulkInstructionByRecipeId(
+  updateBulkInstruction(
     instructions: Instruction[],
-    recipe_id: number
+    t?: Transaction
   ): Promise<InstructionModel[] | null>;
 
   getInstructionByRecipeId(

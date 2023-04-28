@@ -35,8 +35,16 @@ export class RecipeRepositoryImpl implements RecipeRepository {
     return result;
   }
 
-  async updateRecipeById(recipe: Recipe): Promise<RecipeModel | null> {
-    const result = await this.recipeDataSource.updateRecipeById(recipe);
+  async updateRecipeById(
+    recipe_id: number,
+    recipe: Recipe,
+    t?: Transaction
+  ): Promise<RecipeModel | null> {
+    const result = await this.recipeDataSource.updateRecipeById(
+      recipe_id,
+      recipe,
+      t
+    );
     return result;
   }
 }

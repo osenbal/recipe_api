@@ -27,7 +27,8 @@ export default async function validateRefreshToken(
     }
 
     // add user id to request
-    req.body.userId = decoded.id;
+    req.body.userId = decoded.user_id;
+    req.body.roleId = decoded.role_id;
 
     next();
   } catch (error) {

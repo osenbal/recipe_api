@@ -2,7 +2,9 @@ import Recipe from "@domain/entities/recipe/recipe";
 import { RecipeModel } from "@infrastructure/db/model/recipe/recipe.model";
 import { IngredientModel } from "@infrastructure/db/model/recipe/ingredient.model";
 import { RecipeIngredientModel } from "@infrastructure/db/model/recipe/recipe_ingredient.model";
-import { InstructionModel } from "@infrastructure/db/model/recipe/instruction.model";
+import instructionModel, {
+  InstructionModel,
+} from "@infrastructure/db/model/recipe/instruction.model";
 import { UnitModel } from "@infrastructure/db/model/recipe/unit.model";
 import { RecipeDataSource } from "@data/interfaces/data-sources/recipe/recipe-data-source";
 import SQLDatabaseWrapper from "@data/interfaces/data-sources/SQL-database-wrapper";
@@ -21,9 +23,13 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
     return result;
   }
 
-  async updateRecipeById(recipe: Recipe): Promise<RecipeModel | null> {
+  async updateRecipeById(
+    recipe_id: number,
+    recipe: Recipe,
+    t?: Transaction
+  ): Promise<RecipeModel | null> {
     if (!this.db.updateById) return null;
-    const result = await this.db.updateById(recipe.id, recipe);
+    const result = await this.db.updateById(recipe_id, recipe, t);
     return result;
   }
 
@@ -68,6 +74,9 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
             exclude: this.excludeTimestamps,
           },
         },
+      ],
+      order: [
+        [{ model: InstructionModel, as: "recipe_instruction" }, "order", "ASC"],
       ],
     });
     return result;

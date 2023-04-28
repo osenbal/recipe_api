@@ -28,6 +28,7 @@ import {
   RecipeIngredient,
 } from "../../../infrastructure/db/model/";
 import { Transaction } from "sequelize";
+import { QueryInterface } from "sequelize";
 
 export default class MYSQLDataSources {
   private static instance: MYSQLDataSources;
@@ -163,6 +164,11 @@ export default class MYSQLDataSources {
         Instruction.destroy({ where: { id }, transaction: t }),
       bulkCreate: (data: any[], t?: Transaction) =>
         Instruction.bulkCreate(data, { transaction: t }),
+      bulkUpdate: (data: any[], t?: Transaction) =>
+        Instruction.bulkCreate(data, {
+          updateOnDuplicate: ["order", "description"],
+          transaction: t,
+        }),
     };
 
     return new MySQLInstructionDataSource(instructionDatabase);
@@ -195,14 +201,15 @@ export default class MYSQLDataSources {
       bulkCreate: (data: any[], t?: Transaction) =>
         RecipeIngredient.bulkCreate(data, { transaction: t }),
 
-      destroyByQuery: (query: object, t?: Transaction) => {
-        const q = { query, transaction: t };
-        RecipeIngredient.destroy(q);
+      destroyByQuery: (query: any, t?: Transaction) => {
+        RecipeIngredient.destroy({ ...query, transaction: t });
       },
 
-      bulkUpdate: (data: any[], recipe_ids: number[], t?: Transaction) => {
-        const q = { where: { recipe_id: recipe_ids }, transaction: t };
-        RecipeIngredient.bulkCreate(data, q);
+      bulkUpdate: (data: any[], t?: Transaction) => {
+        RecipeIngredient.bulkCreate(data, {
+          updateOnDuplicate: ["ingredient_id", "unit_id", "quantity"],
+          transaction: t,
+        });
       },
     };
 

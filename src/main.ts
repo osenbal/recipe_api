@@ -33,6 +33,8 @@ import { logger, stream } from "./utils/logger";
 import * as Sentry from "@sentry/node";
 import SentryInit from "./utils/monitoring/sentry";
 import { InstructionRepositryImpl } from "@domain/repositories/recipe/instruction-repository";
+import GetCurrentUserUseCaseImpl from "@domain/use-cases/user/get-current-profile";
+import UpdateRecipeUseCaseImpl from "@domain/use-cases/recipe/update-recipe";
 // import dbInit from "./infrastructure/db/init";
 dotenv.config();
 
@@ -71,7 +73,12 @@ async function connectToDB() {
   );
 
   const userRouter = UserRouter(
-    new AssignRoleToUser(new UserRepositoryImpl(userDataSource))
+    new AssignRoleToUser(new UserRepositoryImpl(userDataSource)),
+    new GetCurrentUserUseCaseImpl(
+      new UserRepositoryImpl(userDataSource),
+      new ChefRepositoryImpl(chefDataSource),
+      new CommonUserRepositoryImpl(commonUserDataSource)
+    )
   );
 
   const recipeRouter = RecipeRouter(
@@ -82,6 +89,14 @@ async function connectToDB() {
       new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource())
     ),
     new CreateRecipeUseCaseImpl(
+      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource()),
+      new RecipeIngredientRepositoryImpl(
+        mysqlDataSource.getRecipeIngredientDataSource()
+      ),
+      new InstructionRepositryImpl(mysqlDataSource.getInstructionDataSource()),
+      new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil())
+    ),
+    new UpdateRecipeUseCaseImpl(
       new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource()),
       new RecipeIngredientRepositoryImpl(
         mysqlDataSource.getRecipeIngredientDataSource()

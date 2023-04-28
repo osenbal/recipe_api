@@ -55,19 +55,22 @@ export default class MySQLRecipeIngredientDataSource
     return result;
   }
 
-  async deleteRecipeIngredientByRecipeId(recipe_id: number): Promise<boolean> {
+  async deleteRecipeIngredientByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean> {
     if (!this.db.destroyByQuery) return false;
-    const result = await this.db.destroyByQuery({ where: { recipe_id } });
+    const result = await this.db.destroyByQuery({ where: { recipe_id } }, t);
     return result !== null;
   }
 
-  async updateBulkRecipeIngredientByRecipeId(
+  async updateBulkRecipeIngredient(
     recipeIngredients: RecipeIngredient[],
-    recipe_ids: number[]
+    t?: Transaction
   ): Promise<RecipeIngredientModel[] | null> {
     if (!this.db.bulkUpdate) return null;
 
-    const result = await this.db.bulkUpdate(recipeIngredients, recipe_ids);
+    const result = await this.db.bulkUpdate(recipeIngredients, t);
     return result;
   }
 }

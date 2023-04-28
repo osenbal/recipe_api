@@ -19,14 +19,18 @@ export default class MySQLInstructionDataSource
     const result = this.db.updateById(instruction.id, instruction);
     return result;
   }
+
+  async updateBulkInstruction(
+    instructions: Instruction[],
+    t?: Transaction
+  ): Promise<InstructionModel[] | null> {
+    if (!this.db.bulkUpdate) return null;
+
+    const result = this.db.bulkUpdate(instructions, t);
+    return result;
+  }
   updateBulkInstructionById(
     instructions: Instruction[]
-  ): Promise<InstructionModel[] | null> {
-    throw new Error("Method not implemented.");
-  }
-  updateBulkInstructionByRecipeId(
-    instructions: Instruction[],
-    recipe_id: number
   ): Promise<InstructionModel[] | null> {
     throw new Error("Method not implemented.");
   }

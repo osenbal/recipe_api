@@ -45,6 +45,7 @@ Role.hasMany(User, {
 Role.belongsToMany(Permission, {
   through: RolePermission,
   foreignKey: "role_id",
+  as: "permissions",
 });
 
 Permission.belongsToMany(Role, {

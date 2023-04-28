@@ -25,4 +25,30 @@ export class RecipeIngredientRepositoryImpl
 
     return result;
   }
+
+  async updateBulkRecipeIngredient(
+    recipeIngredients: RecipeIngredient[],
+    t?: Transaction
+  ): Promise<RecipeIngredientModel[] | null> {
+    const result =
+      await this.recipeIngredientDataSource.updateBulkRecipeIngredient(
+        recipeIngredients,
+        t
+      );
+
+    return result;
+  }
+
+  async deleteRecipeIngredientByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean> {
+    const result =
+      await this.recipeIngredientDataSource.deleteRecipeIngredientByRecipeId(
+        recipe_id,
+        t
+      );
+
+    return result;
+  }
 }

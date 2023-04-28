@@ -38,10 +38,12 @@ export class LoginUser implements LoginUserUseCase {
     const jwtService = new JwtService();
     const tokenObj = {
       accessToken: jwtService.createAccessToken({
-        id: userFound.id?.toString()!,
+        user_id: userFound.id!,
+        role_id: userFound.role?.id!,
       }),
       refreshToken: jwtService.createRefreshToken({
-        id: userFound.id?.toString()!,
+        user_id: userFound.id!,
+        role_id: userFound.role?.id!,
       }),
     };
 

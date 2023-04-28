@@ -7,4 +7,14 @@ export interface RecipeIngredientRepository {
     recipeIngredient: RecipeIngredient[],
     t?: Transaction
   ): Promise<RecipeIngredientModel[] | null>;
+
+  updateBulkRecipeIngredient(
+    recipeIngredients: RecipeIngredient[],
+    t?: Transaction
+  ): Promise<RecipeIngredientModel[] | null>;
+
+  deleteRecipeIngredientByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean>;
 }

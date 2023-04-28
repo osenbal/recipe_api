@@ -5,4 +5,6 @@ export interface JwtServiceUseCase {
   createRefreshToken(payload: JwtPayload): string;
   verifyAccessToken(token: string): JwtPayload;
   verifyRefreshToken(token: string): JwtPayload;
+  decodeAccessToken(token: string): JwtPayload;
+  decodeRefreshToken(token: string): JwtPayload;
 }

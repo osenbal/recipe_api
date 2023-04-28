@@ -1,5 +1,6 @@
 import User from "@domain/entities/auth/user";
 import { UserModel } from "@infrastructure/db/model/users.model";
+import { RoleModel } from "@infrastructure/db/model/role.model";
 import { UserDataSource } from "@data/interfaces/data-sources/user-data-source";
 import SQLDatabaseWrapper from "@data/interfaces/data-sources/SQL-database-wrapper";
 import { Transaction } from "sequelize";
@@ -27,8 +28,21 @@ export default class MySQLUserDataSource implements UserDataSource {
   }
 
   async getUserById(id: number): Promise<UserModel | null> {
-    if (!this.db.findPk) return null;
-    const result = await this.db.findPk(id);
+    const result = await this.db.findOne({
+      where: { id },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: RoleModel,
+          as: "role",
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "deletedAt"],
+          },
+        },
+      ],
+    });
     return result;
   }
 

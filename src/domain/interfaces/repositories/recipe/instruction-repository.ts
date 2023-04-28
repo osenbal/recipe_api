@@ -11,4 +11,9 @@ export interface InstructionRepositry {
     data: Instruction[],
     t?: Transaction
   ): Promise<Instruction[] | null>;
+
+  updateBulkInstructions(
+    data: Instruction[],
+    t?: Transaction
+  ): Promise<Instruction[] | null>;
 }

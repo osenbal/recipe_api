@@ -26,6 +26,9 @@ export default async function validateAccessToken(
       throw new HTTP401Error("Token is not valid");
     }
 
+    req.body.userId = decoded.user_id;
+    req.body.roleId = decoded.role_id;
+
     next();
   } catch (error) {
     next(new HTTP401Error(error.message));

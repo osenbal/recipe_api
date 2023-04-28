@@ -21,4 +21,8 @@ export class RoleRepositoryImpl implements RoleRepository {
   async isRoleExist(role_title: string): Promise<boolean> {
     return await this.roleDataSource.isRoleExist(role_title);
   }
+
+  async getRoleWithPermissionsById(id: number): Promise<any> {
+    return await this.roleDataSource.getRoleWithPermissionsById(id);
+  }
 }
