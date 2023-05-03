@@ -34,4 +34,8 @@ export interface InstructionDataSource {
   getInstructionById(id: number): Promise<InstructionModel | null>;
   isInstructionExist(instruction_title: string): Promise<boolean>;
   deleteInstructionById(id: number): Promise<boolean>;
+  hardDeleteInstructionByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean>;
 }

@@ -4,6 +4,7 @@ import { Transaction } from "sequelize";
 
 export interface IngredientDataSource {
   addIngredient(ingredient: Ingredient, t?: Transaction): Promise<boolean>;
+  getIngredients(): Promise<IngredientModel[] | null>;
   getIngredientById(id: number): Promise<IngredientModel | null>;
   getIngredientByIds(ids: number[]): Promise<IngredientModel[] | null>;
   isIngredientExist(ingredient_title: string): Promise<boolean>;

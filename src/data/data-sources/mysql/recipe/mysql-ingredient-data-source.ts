@@ -19,6 +19,13 @@ export default class MySQLIngredientDataSource implements IngredientDataSource {
     return result !== null;
   }
 
+  async getIngredients(): Promise<IngredientModel[] | null> {
+    const result = await this.db.findAll({
+      where: { deletedAt: null },
+    });
+    return result;
+  }
+
   async getIngredientById(id: number): Promise<IngredientModel | null> {
     if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);

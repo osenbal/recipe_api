@@ -15,6 +15,14 @@ export default class MySQLCategoryDataSource implements CategoryDataSource {
     return result;
   }
 
+  async getCategories(): Promise<CategoryModel[] | null> {
+    const result = await this.db.findAll({
+      where: { deletedAt: null },
+      attributes: ["id", "name"],
+    });
+    return result;
+  }
+
   async getCategoryById(id: number): Promise<CategoryModel | null> {
     if (!this.db.findPk) return null;
 

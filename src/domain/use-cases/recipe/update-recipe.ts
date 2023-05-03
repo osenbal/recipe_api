@@ -10,7 +10,7 @@ import Recipe from "@domain/entities/recipe/recipe";
 import RecipeIngredient from "@domain/entities/recipe/recipe_ingredient";
 import Instruction from "@domain/entities/recipe/instruction";
 
-export default class UpdateRecipeUseCaseImpl implements UpdateRecipeUseCase {
+export class UpdateRecipeUseCaseImpl implements UpdateRecipeUseCase {
   recipeRepository: RecipeRepository;
   recipeIngredientRepository: RecipeIngredientRepository;
   instructionRepository: InstructionRepositry;

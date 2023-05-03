@@ -24,6 +24,11 @@ export class RecipeRepositoryImpl implements RecipeRepository {
     return result;
   }
 
+  async hardDeleteRecipeById(id: number, t?: Transaction): Promise<boolean> {
+    const result = await this.recipeDataSource.hardDeleteRecipeById(id, t);
+    return result;
+  }
+
   async getRecipeById(id: number): Promise<any | null> {
     const result = await this.recipeDataSource.getRecipeById(id);
     if (!result) return null;
@@ -32,6 +37,21 @@ export class RecipeRepositoryImpl implements RecipeRepository {
 
   async getRecipes(): Promise<RecipeModel[] | null> {
     const result = await this.recipeDataSource.getRecipes();
+    return result;
+  }
+
+  async getRecipeFilter(
+    search?: string | undefined,
+    category_id?: number | undefined,
+    dish_id?: number | undefined,
+    chef_id?: number | undefined
+  ): Promise<RecipeModel[] | null> {
+    const result = await this.recipeDataSource.getRecipeFilter(
+      search,
+      category_id,
+      dish_id,
+      chef_id
+    );
     return result;
   }
 

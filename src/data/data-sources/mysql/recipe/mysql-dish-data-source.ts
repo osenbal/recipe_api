@@ -15,6 +15,14 @@ export default class MySQLDishDataSource implements DishDataSource {
     return result;
   }
 
+  async getDishes(): Promise<DishModel[] | null> {
+    const result = await this.db.findAll({
+      where: { deletedAt: null },
+      attributes: ["id", "name"],
+    });
+    return result;
+  }
+
   async getDishById(id: number): Promise<DishModel | null> {
     if (!this.db.findPk) return null;
     const result = await this.db.findPk(id);

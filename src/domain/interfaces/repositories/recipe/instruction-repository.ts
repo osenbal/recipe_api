@@ -16,4 +16,9 @@ export interface InstructionRepositry {
     data: Instruction[],
     t?: Transaction
   ): Promise<Instruction[] | null>;
+
+  hardDeleteInstructionByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean>;
 }

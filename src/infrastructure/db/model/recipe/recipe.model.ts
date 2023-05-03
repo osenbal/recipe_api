@@ -90,6 +90,6 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   return RecipeModel.init(recipeAttributes, {
     sequelize,
     tableName: "recipes",
-    paranoid: true,
+    // paranoid: true
   });
 };

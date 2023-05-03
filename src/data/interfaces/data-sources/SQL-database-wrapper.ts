@@ -13,5 +13,5 @@ export default interface SQLDatabaseWrapper {
 
   bulkCreate?(data: any[], t?: Transaction): any;
   bulkUpdate?(data: any[], t?: Transaction): any;
-  bulkDestroy?(data: any[], query: object, t?: Transaction): any;
+  bulkDestroy?(query: object, t?: Transaction): any;
 }

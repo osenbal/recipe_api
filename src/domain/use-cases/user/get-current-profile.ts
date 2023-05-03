@@ -4,9 +4,7 @@ import { ChefRepository } from "@domain/interfaces/repositories/chef-repository"
 import { CommonUserRepository } from "@domain/interfaces/repositories/commonUser-repository";
 import { HTTP404Error, HTTP500Error } from "@domain/exeptions/error-exeption";
 
-export default class GetCurrentUserUseCaseImpl
-  implements GetCurrentProfileUseCase
-{
+export class GetCurrentUserUseCaseImpl implements GetCurrentProfileUseCase {
   userRepository: UserRepository;
   chefRepository: ChefRepository;
   commonUserRepository: CommonUserRepository;

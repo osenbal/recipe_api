@@ -14,6 +14,9 @@ import MySQLIngredientDataSource from "./recipe/mysql-ingredient-data-source";
 import MySQLInstructionDataSource from "./recipe/mysql-instruction-data-source";
 import MySQLRecipeDataSource from "./recipe/mysql-recipe-data-source";
 import MySQLRecipeIngredientDataSource from "./recipe/mysql-recipeIngredient-data-source";
+import MySQLUnitDataSource from "./recipe/mysql-unit-data-source";
+
+import MySQLFavoriteDataSource from "./favorite/mysql-favorite-data-source";
 
 import {
   User,
@@ -22,13 +25,14 @@ import {
   Chef,
   Category,
   Dish,
+  Unit,
   Ingredient,
   Instruction,
   Recipe,
   RecipeIngredient,
+  Favorite,
 } from "../../../infrastructure/db/model/";
 import { Transaction } from "sequelize";
-import { QueryInterface } from "sequelize";
 
 export default class MYSQLDataSources {
   private static instance: MYSQLDataSources;
@@ -169,6 +173,8 @@ export default class MYSQLDataSources {
           updateOnDuplicate: ["order", "description"],
           transaction: t,
         }),
+      destroyByQuery: (query: any, t?: Transaction) =>
+        Instruction.destroy({ ...query, transaction: t }),
     };
 
     return new MySQLInstructionDataSource(instructionDatabase);
@@ -214,5 +220,37 @@ export default class MYSQLDataSources {
     };
 
     return new MySQLRecipeIngredientDataSource(recipeIngredientDatabase);
+  }
+
+  public getFavoriteDataSource(): MySQLFavoriteDataSource {
+    const favoriteDatabase: SQLDatabaseWrapper = {
+      findAll: (query: any) => Favorite.findAll(query),
+      findOne: (query: any) => Favorite.findOne(query),
+      findPk: (id: number) => Favorite.findByPk(id),
+      create: (data: any, t?: Transaction) =>
+        Favorite.create(data, { transaction: t }),
+      updateById: (id: number, data: object, t?: Transaction) =>
+        Favorite.update(data, { where: { id }, transaction: t }),
+      destroyById: (id: number, t?: Transaction) =>
+        Favorite.destroy({ where: { id }, transaction: t }),
+    };
+
+    return new MySQLFavoriteDataSource(favoriteDatabase);
+  }
+
+  public getUnitDataSource(): MySQLUnitDataSource {
+    const unitDatabase: SQLDatabaseWrapper = {
+      findAll: (query: any) => Unit.findAll(query),
+      findOne: (query: any) => Unit.findOne(query),
+      findPk: (id: number) => Unit.findByPk(id),
+      create: (data: any, t?: Transaction) =>
+        Unit.create(data, { transaction: t }),
+      updateById: (id: number, data: object, t?: Transaction) =>
+        Unit.update(data, { where: { id }, transaction: t }),
+      destroyById: (id: number, t?: Transaction) =>
+        Unit.destroy({ where: { id }, transaction: t }),
+    };
+
+    return new MySQLUnitDataSource(unitDatabase);
   }
 }

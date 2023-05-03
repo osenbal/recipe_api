@@ -37,4 +37,16 @@ export class InstructionRepositryImpl implements InstructionRepositry {
     );
     return result;
   }
+
+  async hardDeleteInstructionByRecipeId(
+    recipe_id: number,
+    t?: Transaction
+  ): Promise<boolean> {
+    const result =
+      await this.instructionDataSource.hardDeleteInstructionByRecipeId(
+        recipe_id,
+        t
+      );
+    return result;
+  }
 }

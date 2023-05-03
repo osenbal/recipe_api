@@ -1,7 +1,12 @@
 import * as dotenv from "dotenv";
 import server from "./server";
 import morgan from "morgan";
-import { AuthRouter, UserRouter, RecipeRouter } from "./presentation/routers/";
+import {
+  AuthRouter,
+  UserRouter,
+  RecipeRouter,
+  FavoriteRouter,
+} from "./presentation/routers/";
 
 import MYSQLDataSources from "./data/data-sources/mysql";
 
@@ -13,16 +18,29 @@ import { RefreshToken } from "./domain/use-cases/user/refresh-token";
 import { AssignRoleToUser } from "./domain/use-cases/user/assign-role-to-user";
 
 import { UserRepositoryImpl } from "./domain/repositories/user-repository";
-import { RoleRepositoryImpl } from "./domain/repositories/role-repository";
 import { ChefRepositoryImpl } from "./domain/repositories/chef-repository";
 import { CommonUserRepositoryImpl } from "./domain/repositories/commonUser-repository";
-import { IngredientRepositoryImpl } from "@domain/repositories/recipe/ingredient-repository";
-import { RecipeIngredientRepositoryImpl } from "@domain/repositories/recipe/recipeIngredient-repository";
 
+import { RecipeIngredientRepositoryImpl } from "@domain/repositories/recipe/recipeIngredient-repository";
 import { RecipeRepositoryImpl } from "@domain/repositories/recipe/recipe-repository";
+import { CategoryRepositoryImpl } from "@domain/repositories/recipe/category-repository";
+import { DishRepositoryImpl } from "@domain/repositories/recipe/dish-repository";
+import { UnitRepositoryImpl } from "@domain/repositories/recipe/unit-repository";
+
+import { FavoriteRepositoryImpl } from "@domain/repositories/favorite/favorite-repository";
+
 import { ListRecipeUseCaseImpl } from "@domain/use-cases/recipe/list-recipe";
 import { DetailRecipeUseCaseImpl } from "@domain/use-cases/recipe/detail-recipe";
 import { CreateRecipeUseCaseImpl } from "@domain/use-cases/recipe/create-recipe";
+import { InstructionRepositryImpl } from "@domain/repositories/recipe/instruction-repository";
+import { GetCurrentUserUseCaseImpl } from "@domain/use-cases/user/get-current-profile";
+import { UpdateRecipeUseCaseImpl } from "@domain/use-cases/recipe/update-recipe";
+import { DeleteRecipeUseCaseImpl } from "@domain/use-cases/recipe/delete-recipe";
+import { ListCategoryDishUnitUseCaseImpl } from "@domain/use-cases/recipe/list-category-dish-unit";
+
+import { AddRecipeToFavoriteUseCaseImpl } from "@domain/use-cases/favorite/add-faforite";
+import { ListFavoriteUseCaseImpl } from "@domain/use-cases/favorite/list-faorite";
+import { DeleteFavoriteUseCaseImpl } from "@domain/use-cases/favorite/delete-favorite";
 
 import { MySQLTransactionsUtilRepositoryImpl } from "./domain/repositories/utils/mysqlTransaction-util-repository";
 
@@ -32,9 +50,6 @@ import { sequelize } from "./infrastructure/db/sequelize";
 import { logger, stream } from "./utils/logger";
 import * as Sentry from "@sentry/node";
 import SentryInit from "./utils/monitoring/sentry";
-import { InstructionRepositryImpl } from "@domain/repositories/recipe/instruction-repository";
-import GetCurrentUserUseCaseImpl from "@domain/use-cases/user/get-current-profile";
-import UpdateRecipeUseCaseImpl from "@domain/use-cases/recipe/update-recipe";
 // import dbInit from "./infrastructure/db/init";
 dotenv.config();
 
@@ -55,55 +70,94 @@ async function connectToDB() {
   await connectToDB();
   // await dbInit();
 
+  // data sources
   const mysqlDataSource = MYSQLDataSources.getInstance();
   const userDataSource = mysqlDataSource.getUserDataSource();
   const commonUserDataSource = mysqlDataSource.getCommonUserDataSource();
   const chefDataSource = mysqlDataSource.getChefDataSource();
+  const recipeDataSource = mysqlDataSource.getRecipeDataSource();
+  const recipeIngredientDataSource =
+    mysqlDataSource.getRecipeIngredientDataSource();
+  const instructionDataSource = mysqlDataSource.getInstructionDataSource();
+  const favoriteDataSource = mysqlDataSource.getFavoriteDataSource();
+  const categoryDataSource = mysqlDataSource.getCategoryDataSource();
+  const dishDataSource = mysqlDataSource.getDishDataSource();
+  const unitDataSource = mysqlDataSource.getUnitDataSource();
+  // const ingredientDataSource = mysqlDataSource.getIngredientDataSource();
   // const roleDataSource = mysqlDataSource.getRoleDataSource();
+
+  // repositories implementation
+  const userRepositoryImpl = new UserRepositoryImpl(userDataSource);
+  const commonUserRepositoryImpl = new CommonUserRepositoryImpl(
+    commonUserDataSource
+  );
+  const chefRepositoryImpl = new ChefRepositoryImpl(chefDataSource);
+  const mySQLTransactionRepositoryImpl =
+    new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil());
+  const recipeRepositoryImpl = new RecipeRepositoryImpl(recipeDataSource);
+  const recipeIngredientRepositoryImpl = new RecipeIngredientRepositoryImpl(
+    recipeIngredientDataSource
+  );
+  const instructionRepositoryImpl = new InstructionRepositryImpl(
+    instructionDataSource
+  );
+  const categoryRepositoryImpl = new CategoryRepositoryImpl(categoryDataSource);
+  const dishRepositoryImpl = new DishRepositoryImpl(dishDataSource);
+  const unitRepositoryImpl = new UnitRepositoryImpl(unitDataSource);
+  const favoriteRepositoryImpl = new FavoriteRepositoryImpl(favoriteDataSource);
 
   const authRouter = AuthRouter(
     new RegisterUser(
-      new UserRepositoryImpl(userDataSource),
-      new CommonUserRepositoryImpl(commonUserDataSource),
-      new ChefRepositoryImpl(chefDataSource),
-      new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil())
+      userRepositoryImpl,
+      commonUserRepositoryImpl,
+      chefRepositoryImpl,
+      mySQLTransactionRepositoryImpl
     ),
-    new LoginUser(new UserRepositoryImpl(userDataSource)),
+    new LoginUser(userRepositoryImpl),
     new RefreshToken()
   );
 
   const userRouter = UserRouter(
-    new AssignRoleToUser(new UserRepositoryImpl(userDataSource)),
+    new AssignRoleToUser(userRepositoryImpl),
     new GetCurrentUserUseCaseImpl(
-      new UserRepositoryImpl(userDataSource),
-      new ChefRepositoryImpl(chefDataSource),
-      new CommonUserRepositoryImpl(commonUserDataSource)
+      userRepositoryImpl,
+      chefRepositoryImpl,
+      commonUserRepositoryImpl
     )
   );
 
   const recipeRouter = RecipeRouter(
-    new ListRecipeUseCaseImpl(
-      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource())
-    ),
-    new DetailRecipeUseCaseImpl(
-      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource())
-    ),
+    new ListRecipeUseCaseImpl(recipeRepositoryImpl),
+    new DetailRecipeUseCaseImpl(recipeRepositoryImpl),
     new CreateRecipeUseCaseImpl(
-      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource()),
-      new RecipeIngredientRepositoryImpl(
-        mysqlDataSource.getRecipeIngredientDataSource()
-      ),
-      new InstructionRepositryImpl(mysqlDataSource.getInstructionDataSource()),
-      new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil())
+      recipeRepositoryImpl,
+      recipeIngredientRepositoryImpl,
+      instructionRepositoryImpl,
+      mySQLTransactionRepositoryImpl
     ),
     new UpdateRecipeUseCaseImpl(
-      new RecipeRepositoryImpl(mysqlDataSource.getRecipeDataSource()),
-      new RecipeIngredientRepositoryImpl(
-        mysqlDataSource.getRecipeIngredientDataSource()
-      ),
-      new InstructionRepositryImpl(mysqlDataSource.getInstructionDataSource()),
-      new MySQLTransactionsUtilRepositoryImpl(new MySQLTransactionsUtil())
+      recipeRepositoryImpl,
+      recipeIngredientRepositoryImpl,
+      instructionRepositoryImpl,
+      mySQLTransactionRepositoryImpl
+    ),
+    new DeleteRecipeUseCaseImpl(
+      recipeRepositoryImpl,
+      instructionRepositoryImpl,
+      recipeIngredientRepositoryImpl,
+      mySQLTransactionRepositoryImpl
+    ),
+    new ListCategoryDishUnitUseCaseImpl(
+      categoryRepositoryImpl,
+      dishRepositoryImpl,
+      unitRepositoryImpl
     )
+  );
+
+  const favoriteRouter = FavoriteRouter(
+    new AddRecipeToFavoriteUseCaseImpl(favoriteRepositoryImpl),
+    new ListFavoriteUseCaseImpl(favoriteRepositoryImpl),
+    new DeleteFavoriteUseCaseImpl(favoriteRepositoryImpl)
   );
 
   // MONITORING SENTRY
@@ -121,6 +175,7 @@ async function connectToDB() {
   server.use("/auth", authRouter);
   server.use("/user", userRouter);
   server.use("/recipe", recipeRouter);
+  server.use("/favorite", favoriteRouter);
 
   // The error handler must be before any other error middleware and after all controllers
   if (process.env.NODE_ENV === "production") {

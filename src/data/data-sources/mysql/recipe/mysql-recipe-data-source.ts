@@ -8,7 +8,7 @@ import instructionModel, {
 import { UnitModel } from "@infrastructure/db/model/recipe/unit.model";
 import { RecipeDataSource } from "@data/interfaces/data-sources/recipe/recipe-data-source";
 import SQLDatabaseWrapper from "@data/interfaces/data-sources/SQL-database-wrapper";
-import { Transaction } from "sequelize";
+import { Transaction, Op } from "sequelize";
 
 export default class MySQLRecipeDataSource implements RecipeDataSource {
   private db: SQLDatabaseWrapper;
@@ -33,10 +33,22 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
     return result;
   }
 
-  async deleteRecipeById(id: number): Promise<boolean> {
-    if (!this.db.destroyById) return false;
+  async deleteRecipeById(id: number, t?: Transaction): Promise<boolean> {
+    if (!this.db.updateById) return false;
+    const result = await this.db.updateById(
+      id,
+      {
+        deletedAt: new Date(),
+      },
+      t
+    );
 
-    const result = await this.db.destroyById(id);
+    return result[0] == 1 ? true : false;
+  }
+
+  async hardDeleteRecipeById(id: number, t?: Transaction): Promise<boolean> {
+    if (!this.db.destroyById) return false;
+    const result = await this.db.destroyById(id, t);
     return result !== null;
   }
 
@@ -84,6 +96,28 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
 
   async getRecipes(): Promise<RecipeModel[] | null> {
     const result = await this.db.findAll({
+      where: { deletedAt: null },
+      include: ["category", "dish", "chef"],
+    });
+    return result;
+  }
+
+  async getRecipeFilter(
+    search?: string,
+    category_id?: number,
+    dish_id?: number,
+    chef_id?: number
+  ): Promise<RecipeModel[] | null> {
+    const q = {};
+    if (search) Object.assign(q, { title: { [Op.like]: `%${search}%` } });
+    if (category_id) Object.assign(q, { category_id });
+    if (dish_id) Object.assign(q, { dish_id });
+    if (chef_id) Object.assign(q, { chef_id });
+
+    const result = await this.db.findAll({
+      where: {
+        [Op.and]: [q, { deletedAt: null }],
+      },
       include: ["category", "dish", "chef"],
     });
     return result;

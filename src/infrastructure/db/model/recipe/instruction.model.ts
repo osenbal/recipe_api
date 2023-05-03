@@ -1,6 +1,5 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
 import Instruction from "@domain/entities/recipe/instruction";
-
 export interface InstructionModelInput extends Optional<Instruction, "id"> {}
 export interface InstructionModelrOutput extends Required<Instruction> {}
 
@@ -55,6 +54,6 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   return InstructionModel.init(instructionAttributes, {
     sequelize,
     tableName: "instructions",
-    paranoid: true,
+    // paranoid: true,
   });
 };

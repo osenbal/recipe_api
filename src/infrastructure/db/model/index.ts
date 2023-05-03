@@ -14,7 +14,7 @@ import InstructionModel from "./recipe/instruction.model";
 import IngredientModel from "./recipe/ingredient.model";
 import RecipeIngredientModel from "./recipe/recipe_ingredient.model";
 import UnitModel from "./recipe/unit.model";
-import FavoriteModel from "./recipe/favorite.model";
+import FavoriteModel from "./favorite/favorite.model";
 
 export const Role = RoleSequelize(sequelize, DataTypes);
 export const User = UserSequelize(sequelize, DataTypes);
@@ -89,19 +89,22 @@ Dish.hasMany(Recipe, {
   foreignKey: "dish_id",
 });
 
+// relation recipe with instruction
+Recipe.hasMany(Instruction, {
+  onDelete: "CASCADE",
+  foreignKey: "recipe_id",
+  as: "recipe_instruction",
+});
 Instruction.belongsTo(Recipe, {
   foreignKey: "recipe_id",
-  as: "recipe",
-});
-
-Recipe.hasMany(Instruction, {
-  foreignKey: "recipe_id",
+  as: "recipe_instruction",
 });
 
 Recipe.belongsToMany(Ingredient, {
   through: RecipeIngredient,
   foreignKey: "recipe_id",
   as: "recipe_ingredient",
+  onDelete: "CASCADE",
 });
 
 Ingredient.belongsToMany(Recipe, {
@@ -112,6 +115,7 @@ Ingredient.belongsToMany(Recipe, {
 // Relasi One-to-Many antara Recipe dan RecipeIngredient
 Recipe.hasMany(RecipeIngredient, {
   foreignKey: "recipe_id",
+  onDelete: "CASCADE",
 });
 RecipeIngredient.belongsTo(Recipe, {
   foreignKey: "recipe_id",
@@ -137,12 +141,20 @@ RecipeIngredient.belongsTo(Unit, {
   as: "unit_measurment",
 });
 
-// relation recipe with instruction
-Recipe.hasMany(Instruction, {
+// relation recipe with favorite
+Recipe.hasMany(Favorite, {
   foreignKey: "recipe_id",
-  as: "recipe_instruction",
+  as: "recipe",
 });
-Instruction.belongsTo(Recipe, {
+Favorite.belongsTo(Recipe, {
   foreignKey: "recipe_id",
-  as: "recipe_instruction",
+  as: "recipe",
+});
+
+// relation user with favorite
+User.hasMany(Favorite, {
+  foreignKey: "user_id",
+});
+Favorite.belongsTo(User, {
+  foreignKey: "user_id",
 });

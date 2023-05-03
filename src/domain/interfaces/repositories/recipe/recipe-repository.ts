@@ -4,6 +4,13 @@ import { Transaction } from "sequelize";
 
 export interface RecipeRepository {
   getRecipeById(id: number): Promise<RecipeModel | null>;
+  getRecipeFilter(
+    search?: string,
+    category_id?: number,
+    dish_id?: number,
+    chef_id?: number
+  ): Promise<RecipeModel[] | null>;
+
   getRecipes(): Promise<RecipeModel[] | null>;
 
   addRecipe(recipe: Recipe, t?: Transaction): Promise<RecipeModel | null>;
@@ -15,4 +22,5 @@ export interface RecipeRepository {
   ): Promise<RecipeModel | null>;
 
   deleteRecipeById(id: number): Promise<boolean>;
+  hardDeleteRecipeById(id: number, t?: Transaction): Promise<boolean>;
 }

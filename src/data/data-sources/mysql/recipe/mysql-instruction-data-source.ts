@@ -66,4 +66,14 @@ export default class MySQLInstructionDataSource
     const result = await this.db.bulkCreate(instructions, t);
     return result;
   }
+
+  async hardDeleteInstructionByRecipeId(
+    recipe_id: number,
+    t?: Transaction | undefined
+  ): Promise<boolean> {
+    if (!this.db.destroyByQuery) return false;
+
+    const result = this.db.destroyByQuery({ where: { recipe_id } }, t);
+    return result !== null;
+  }
 }
