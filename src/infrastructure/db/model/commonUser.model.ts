@@ -1,10 +1,23 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import CommonUser from "@domain/entities/user/commonUser";
+// import CommonUser from "@domain/entities/user/commonUser";
+interface ICommonUserAttributes {
+  id: number;
+  user_id: number;
+  name: string;
+  profile_url: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
 
-export interface CommonUserInput extends Optional<CommonUser, "id"> {}
-export interface CommonUserOutput extends Required<CommonUser> {}
+export interface CommonUserInput
+  extends Optional<ICommonUserAttributes, "id"> {}
+export interface CommonUserOutput extends Required<ICommonUserAttributes> {}
 
-export class CommonUserModel extends Model<CommonUser, CommonUserInput> {
+export class CommonUserModel extends Model<
+  ICommonUserAttributes,
+  CommonUserInput
+> {
   public id!: number;
   public user_id!: number;
   public name!: string;

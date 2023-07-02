@@ -4,19 +4,26 @@ import CloudStorage from "@infrastructure/interfaces/storage/cloud-storage";
 import { FirebaseStorageServiceImpl } from "@infrastructure/firebase/storage";
 import { RecipeIngredientRepository } from "@domain/interfaces/repositories/recipe/recipeIngredient-repository";
 import { InstructionRepositry } from "@domain/interfaces/repositories/recipe/instruction-repository";
+import { ChefRepository } from "@domain/interfaces/repositories/chef-repository";
 import { MySQLTransactionsUtilRepository } from "@domain/interfaces/repositories/utils/mysqlTransaction-util-repository";
+
 import {
   ICreateRecipeIngredientRequestBody,
   ICreateRecipeRequestBody,
 } from "@domain/interfaces/http/request-body/recipe";
-import Recipe from "@domain/entities/recipe/recipe";
+import IRecipe from "@domain/entities/recipe/recipe";
 import RecipeIngredient from "@domain/entities/recipe/recipe_ingredient";
+import { NutritionRepository } from "@domain/interfaces/repositories/recipe/nutrition-repository";
 // import Instruction from "@do/main/entities/recipe/instruction";
+
+const PATH_STORAGE_RECIPE_THUMBNAIL = "/assets/image/recipes_thumbnail_img";
 
 export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
   recipeRepository: RecipeRepository;
   recipeIngredientRepository: RecipeIngredientRepository;
   instructionRepository: InstructionRepositry;
+  nutritionRepository: NutritionRepository;
+  chefRepository: ChefRepository;
   mySQLTransactionsUtilRepository: MySQLTransactionsUtilRepository;
   firebaseStorageService: CloudStorage;
 
@@ -24,11 +31,15 @@ export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
     recipeRepository: RecipeRepository,
     recipeIngredientRepository: RecipeIngredientRepository,
     instructionRepository: InstructionRepositry,
+    chefRepository: ChefRepository,
+    nutritionRepository: NutritionRepository,
     mySQLTransactionsUtilRepository: MySQLTransactionsUtilRepository
   ) {
     this.recipeRepository = recipeRepository;
     this.recipeIngredientRepository = recipeIngredientRepository;
     this.instructionRepository = instructionRepository;
+    this.nutritionRepository = nutritionRepository;
+    this.chefRepository = chefRepository;
     this.mySQLTransactionsUtilRepository = mySQLTransactionsUtilRepository;
     this.firebaseStorageService = new FirebaseStorageServiceImpl();
   }
@@ -37,12 +48,17 @@ export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
     //  upload to firebase storage
     const thumbnail_url = await this.firebaseStorageService.uploadFileImage(
       data.file,
-      "/assets/image/recipes_thumbnail_img"
+      PATH_STORAGE_RECIPE_THUMBNAIL
     );
 
-    const recipe: Recipe = {
-      id: 0,
-      chef_id: data.chef_id,
+    console.log("user id", data.userId);
+
+    const findChef = await this.chefRepository.getChefByUserId(data.userId);
+
+    if (!findChef) throw new Error("User not chef");
+
+    const recipe: IRecipe = {
+      chef_id: findChef.id,
       category_id: data.category_id,
       dish_id: data.dish_id,
       thumbnail_url: thumbnail_url,
@@ -86,8 +102,22 @@ export class CreateRecipeUseCaseImpl implements CreateRecipeUseCase {
       const newInstructions =
         await this.instructionRepository.addBulkInstructions(instructions, t);
 
+      const nutrition = {
+        recipe_id: newRecipe.id,
+        ...data.nutrition,
+      };
+
+      const newNutrition = await this.nutritionRepository.addNutrition(
+        nutrition,
+        t
+      );
+
       await t.commit();
-      return newRecipe && newRecipeIngredients && newInstructions
+
+      return newRecipe &&
+        newRecipeIngredients &&
+        newInstructions &&
+        newNutrition
         ? true
         : false;
     } catch (error) {

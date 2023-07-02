@@ -30,6 +30,11 @@ export default class FavoriteController {
         const { recipe_id, userId } = req.body;
 
         const result = await this.addFavorite.execute(userId, recipe_id);
+
+        if (result === null) {
+          throw new HTTP404Error("Favorite already exists");
+        }
+
         res.status(200).send(
           ResponseObj.success("Favorite added successfully", {
             data: result,
@@ -70,8 +75,11 @@ export default class FavoriteController {
   ) => Promise<void> {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { favorite_id } = req.params;
-        const result = await this.deleteFavorite.execute(Number(favorite_id));
+        const { recipe_id, userId } = req.body;
+        const result = await this.deleteFavorite.execute(
+          Number(recipe_id),
+          Number(userId)
+        );
 
         if (!result) {
           throw new HTTP404Error("Favorite not found");

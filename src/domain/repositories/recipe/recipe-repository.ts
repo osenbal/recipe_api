@@ -1,5 +1,5 @@
 import { RecipeRepository } from "@domain/interfaces/repositories/recipe/recipe-repository";
-import Recipe from "@domain/entities/recipe/recipe";
+import IRecipe from "@domain/entities/recipe/recipe";
 import { RecipeDataSource } from "@data/interfaces/data-sources/recipe/recipe-data-source";
 import { RecipeModel } from "@infrastructure/db/model/recipe/recipe.model";
 import { Transaction } from "sequelize";
@@ -12,7 +12,7 @@ export class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   async addRecipe(
-    recipe: Recipe,
+    recipe: IRecipe,
     t?: Transaction
   ): Promise<RecipeModel | null> {
     const result = await this.recipeDataSource.addRecipe(recipe, t);
@@ -29,35 +29,39 @@ export class RecipeRepositoryImpl implements RecipeRepository {
     return result;
   }
 
-  async getRecipeById(id: number): Promise<any | null> {
-    const result = await this.recipeDataSource.getRecipeById(id);
+  async getRecipeById(id: number, user_id?: number): Promise<any | null> {
+    const result = await this.recipeDataSource.getRecipeById(id, user_id);
     if (!result) return null;
     return result;
   }
 
-  async getRecipes(): Promise<RecipeModel[] | null> {
-    const result = await this.recipeDataSource.getRecipes();
+  async getRecipes(user_id?: number): Promise<RecipeModel[] | null> {
+    const result = await this.recipeDataSource.getRecipes(user_id);
     return result;
   }
 
   async getRecipeFilter(
+    user_id?: number,
     search?: string | undefined,
     category_id?: number | undefined,
     dish_id?: number | undefined,
-    chef_id?: number | undefined
+    chef_id?: number | undefined,
+    filterTime?: string
   ): Promise<RecipeModel[] | null> {
     const result = await this.recipeDataSource.getRecipeFilter(
+      user_id,
       search,
       category_id,
       dish_id,
-      chef_id
+      chef_id,
+      filterTime
     );
     return result;
   }
 
   async updateRecipeById(
     recipe_id: number,
-    recipe: Recipe,
+    recipe: IRecipe,
     t?: Transaction
   ): Promise<RecipeModel | null> {
     const result = await this.recipeDataSource.updateRecipeById(

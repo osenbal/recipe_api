@@ -5,10 +5,12 @@ import { CreateRecipeUseCase } from "@domain/interfaces/use-cases/recipe/create-
 import { UpdateRecipeUseCase } from "@domain/interfaces/use-cases/recipe/update-recipe";
 import { DeleteRecipeUseCase } from "@domain/interfaces/use-cases/recipe/delete-recipe";
 import { ListCategoryDishUnitUseCase } from "@domain/interfaces/use-cases/recipe/list-category-dish-unit";
+import { ListIngredientUseCase } from "@domain/interfaces/use-cases/recipe/list-ingredient";
 import RecipeController from "../../infrastructure/controllers/recipe/recipe-controller";
 import { uploadMemoryStorage } from "@infrastructure/storage/multer";
 import checkPermissions from "@domain/middlewares/checkPermissions-middleware";
 import validateAccessToken from "@domain/middlewares/validateAccessToken-middleware";
+import validateAccessTokenIfExist from "@domain/middlewares/validateTokenIfExist-middleware";
 import { PERMISSIONS } from "@constants/permissions";
 
 export default function RecipeRouter(
@@ -17,7 +19,8 @@ export default function RecipeRouter(
   createRecipeUseCase: CreateRecipeUseCase,
   updateRecipeUseCase: UpdateRecipeUseCase,
   deleteRecipeUseCase: DeleteRecipeUseCase,
-  listCategoryDishUnitUseCase: ListCategoryDishUnitUseCase
+  listCategoryDishUnitUseCase: ListCategoryDishUnitUseCase,
+  listIngredientUseCase: ListIngredientUseCase
 ) {
   const router = Router();
   const recipeController = new RecipeController(
@@ -26,36 +29,32 @@ export default function RecipeRouter(
     createRecipeUseCase,
     updateRecipeUseCase,
     deleteRecipeUseCase,
-    listCategoryDishUnitUseCase
+    listCategoryDishUnitUseCase,
+    listIngredientUseCase
   );
 
-  router.get(
-    "/",
-    validateAccessToken,
-    checkPermissions(PERMISSIONS.LIST_RECIPE),
-    recipeController.list()
-  );
+  router.get("/", validateAccessTokenIfExist, recipeController.list());
 
   router.post(
     "/",
+    uploadMemoryStorage.single("thumbnail_url"),
     validateAccessToken,
     checkPermissions(PERMISSIONS.CREATE_RECIPE),
-    uploadMemoryStorage.single("thumbnail_url"),
     recipeController.create()
   );
   router.get(
     "/filter",
-    validateAccessToken,
-    checkPermissions(PERMISSIONS.LIST_RECIPE),
+    validateAccessTokenIfExist,
     recipeController.filterList()
   );
-  router.get("/category", validateAccessToken, recipeController.listCategory());
-  router.get("/dish", validateAccessToken, recipeController.listDish());
-  router.get("/unit", validateAccessToken, recipeController.listUnit());
+  router.get("/category", recipeController.listCategory());
+  router.get("/dish", recipeController.listDish());
+  router.get("/unit", recipeController.listUnit());
+  router.get("/ingredient", recipeController.getListIngredient());
 
   router.get(
     "/:recipe_id",
-    validateAccessToken,
+    validateAccessTokenIfExist,
     recipeController.getRecipeDetailById()
   );
 

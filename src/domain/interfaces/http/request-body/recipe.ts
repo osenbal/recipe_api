@@ -5,7 +5,7 @@ export interface ICreateRecipeIngredientRequestBody {
 }
 
 export interface ICreateRecipeRequestBody {
-  chef_id: number;
+  userId: number;
   category_id: number;
   dish_id: number;
 
@@ -21,4 +21,11 @@ export interface ICreateRecipeRequestBody {
 
   ingredients: ICreateRecipeIngredientRequestBody[];
   instructions: string[];
+
+  nutrition: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    sugar: number;
+  };
 }

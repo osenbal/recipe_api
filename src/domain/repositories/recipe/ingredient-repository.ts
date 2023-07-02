@@ -19,4 +19,9 @@ export class IngredientRepositoryImpl implements IngredientRepository {
     const result = await this.ingredientDataSource.addIngredient(ingredient, t);
     return result;
   }
+
+  async getIngredients(): Promise<any[] | null> {
+    const result = await this.ingredientDataSource.getIngredients();
+    return result;
+  }
 }

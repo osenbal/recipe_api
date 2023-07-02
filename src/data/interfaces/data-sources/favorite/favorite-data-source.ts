@@ -7,6 +7,10 @@ export interface FavoriteDataSource {
     favorite: Favorite,
     t?: Transaction
   ): Promise<FavoriteModel | null>;
-  deleteFavoriteById(id: number, t?: Transaction): Promise<boolean>;
+  deleteFavoriteById(
+    recipe_id: number,
+    user_id: number,
+    t?: Transaction
+  ): Promise<boolean>;
   getFavoritesByUserId(user_id: number): Promise<any[] | null>;
 }

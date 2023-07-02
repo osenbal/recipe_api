@@ -4,4 +4,5 @@ import { Transaction } from "sequelize";
 
 export interface IngredientRepository {
   addIngredient(ingredient: Ingredient, t?: Transaction): Promise<boolean>;
+  getIngredients(): Promise<IngredientModel[] | null>;
 }

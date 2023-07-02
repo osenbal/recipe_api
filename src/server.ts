@@ -1,6 +1,23 @@
 import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
 
 const server = express();
+
+// CORS
+// cors options
+const corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
+
+server.use(bodyParser.json());
+// server.use(
+//   bodyParser.urlencoded({
+//     extended: false,
+//   })
+// );
+server.use(cors(corsOptions));
 
 // for parsing application/json
 server.use(express.json());

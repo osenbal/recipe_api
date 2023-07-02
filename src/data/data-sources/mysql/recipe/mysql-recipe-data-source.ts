@@ -1,14 +1,15 @@
-import Recipe from "@domain/entities/recipe/recipe";
+import IRecipe from "@domain/entities/recipe/recipe";
 import { RecipeModel } from "@infrastructure/db/model/recipe/recipe.model";
 import { IngredientModel } from "@infrastructure/db/model/recipe/ingredient.model";
 import { RecipeIngredientModel } from "@infrastructure/db/model/recipe/recipe_ingredient.model";
-import instructionModel, {
-  InstructionModel,
-} from "@infrastructure/db/model/recipe/instruction.model";
+import { InstructionModel } from "@infrastructure/db/model/recipe/instruction.model";
 import { UnitModel } from "@infrastructure/db/model/recipe/unit.model";
 import { RecipeDataSource } from "@data/interfaces/data-sources/recipe/recipe-data-source";
 import SQLDatabaseWrapper from "@data/interfaces/data-sources/SQL-database-wrapper";
 import { Transaction, Op } from "sequelize";
+import { FavoriteModel } from "@infrastructure/db/model/favorite/favorite.model";
+import { ChefModel } from "@infrastructure/db/model/chef.model";
+import { UserModel } from "@infrastructure/db/model/users.model";
 
 export default class MySQLRecipeDataSource implements RecipeDataSource {
   private db: SQLDatabaseWrapper;
@@ -18,14 +19,17 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
     this.db = db;
   }
 
-  async addRecipe(recipe: Recipe, t: Transaction): Promise<RecipeModel | null> {
+  async addRecipe(
+    recipe: IRecipe,
+    t: Transaction
+  ): Promise<RecipeModel | null> {
     const result = await this.db.create(recipe, t);
     return result;
   }
 
   async updateRecipeById(
     recipe_id: number,
-    recipe: Recipe,
+    recipe: IRecipe,
     t?: Transaction
   ): Promise<RecipeModel | null> {
     if (!this.db.updateById) return null;
@@ -52,7 +56,10 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
     return result !== null;
   }
 
-  async getRecipeById(id: number): Promise<RecipeModel | null> {
+  async getRecipeById(
+    id: number,
+    user_id?: number
+  ): Promise<RecipeModel | null> {
     const result = await this.db.findOne({
       where: { id },
       include: [
@@ -86,6 +93,33 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
             exclude: this.excludeTimestamps,
           },
         },
+        {
+          model: ChefModel,
+          as: "chef",
+          attributes: {
+            exclude: this.excludeTimestamps,
+          },
+          include: {
+            model: UserModel,
+            as: "user",
+            attributes: {
+              exclude: ["password", ...this.excludeTimestamps],
+            },
+          },
+        },
+        {
+          model: FavoriteModel,
+          as: "favorite",
+          where: user_id
+            ? { user_id }
+            : {
+                user_id: null,
+              },
+          attributes: {
+            exclude: [...this.excludeTimestamps],
+          },
+          required: false,
+        },
       ],
       order: [
         [{ model: InstructionModel, as: "recipe_instruction" }, "order", "ASC"],
@@ -94,19 +128,52 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
     return result;
   }
 
-  async getRecipes(): Promise<RecipeModel[] | null> {
+  async getRecipes(user_id?: number): Promise<RecipeModel[] | null> {
     const result = await this.db.findAll({
       where: { deletedAt: null },
-      include: ["category", "dish", "chef"],
+
+      include: [
+        "category",
+        "dish",
+        {
+          model: ChefModel,
+          as: "chef",
+          attributes: {
+            exclude: this.excludeTimestamps,
+          },
+          include: {
+            model: UserModel,
+            as: "user",
+            attributes: {
+              exclude: ["password", ...this.excludeTimestamps],
+            },
+          },
+        },
+        {
+          model: FavoriteModel,
+          as: "favorite",
+          where: user_id
+            ? { user_id }
+            : {
+                user_id: null,
+              },
+          attributes: {
+            exclude: [...this.excludeTimestamps],
+          },
+          required: false,
+        },
+      ],
     });
     return result;
   }
 
   async getRecipeFilter(
+    user_id?: number,
     search?: string,
     category_id?: number,
     dish_id?: number,
-    chef_id?: number
+    chef_id?: number,
+    filterTime?: string
   ): Promise<RecipeModel[] | null> {
     const q = {};
     if (search) Object.assign(q, { title: { [Op.like]: `%${search}%` } });
@@ -118,7 +185,38 @@ export default class MySQLRecipeDataSource implements RecipeDataSource {
       where: {
         [Op.and]: [q, { deletedAt: null }],
       },
-      include: ["category", "dish", "chef"],
+      order: [["createdAt", filterTime == "newest" ? "DESC" : "ASC"]],
+      include: [
+        "category",
+        "dish",
+        {
+          model: ChefModel,
+          as: "chef",
+          attributes: {
+            exclude: this.excludeTimestamps,
+          },
+          include: {
+            model: UserModel,
+            as: "user",
+            attributes: {
+              exclude: ["password", ...this.excludeTimestamps],
+            },
+          },
+        },
+        {
+          model: FavoriteModel,
+          as: "favorite",
+          where: user_id
+            ? { user_id }
+            : {
+                user_id: null,
+              },
+          attributes: {
+            exclude: [...this.excludeTimestamps],
+          },
+          required: false,
+        },
+      ],
     });
     return result;
   }

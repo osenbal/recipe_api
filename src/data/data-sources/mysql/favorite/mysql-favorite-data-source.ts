@@ -4,6 +4,8 @@ import { FavoriteModel } from "@infrastructure/db/model/favorite/favorite.model"
 import Favorite from "@domain/entities/recipe/favorite";
 import { RecipeModel } from "@infrastructure/db/model/recipe/recipe.model";
 import { Transaction } from "sequelize";
+import { ChefModel } from "@infrastructure/db/model/chef.model";
+import { UserModel } from "@infrastructure/db/model/users.model";
 
 export default class MySQLFavoriteDataSource implements FavoriteDataSource {
   db: SQLDatabaseWrapper;
@@ -16,22 +18,32 @@ export default class MySQLFavoriteDataSource implements FavoriteDataSource {
     favorite: Favorite,
     t?: Transaction
   ): Promise<FavoriteModel | null> {
+    const favoriteFind = await this.db.findOne({
+      where: { user_id: favorite.user_id, recipe_id: favorite.recipe_id },
+    });
+
+    if (favoriteFind) {
+      return null;
+    }
+
     const result = await this.db.create(favorite, t);
     return result;
   }
 
-  async deleteFavoriteById(id: number, t?: Transaction): Promise<boolean> {
-    if (!this.db.updateById) return false;
-    const result = await this.db.updateById(
-      id,
+  async deleteFavoriteById(
+    recipe_id: number,
+    user_id: number,
+    t?: Transaction
+  ): Promise<any> {
+    if (!this.db.destroyByQuery) throw new Error("Method not implemented");
+    console.log(recipe_id, user_id);
+    const result = await this.db.destroyByQuery(
       {
-        deletedAt: new Date(),
+        where: { recipe_id, user_id },
       },
       t
     );
-    console.log("statius", result);
-
-    return result[0] == 1 ? true : false;
+    return result;
   }
 
   async getFavoritesByUserId(user_id: number): Promise<any[] | null> {
@@ -42,7 +54,30 @@ export default class MySQLFavoriteDataSource implements FavoriteDataSource {
           model: RecipeModel,
           as: "recipe",
           where: { deletedAt: null },
-          include: ["category", "dish", "chef"],
+          include: [
+            "category",
+            "dish",
+            {
+              model: ChefModel,
+              as: "chef",
+              where: { deletedAt: null },
+              attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+              include: [
+                {
+                  model: UserModel,
+                  as: "user",
+                  attributes: {
+                    exclude: [
+                      "password",
+                      "createdAt",
+                      "updatedAt",
+                      "deletedAt",
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
         },
       ],
     });

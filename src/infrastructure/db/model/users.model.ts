@@ -1,10 +1,23 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import User from "@domain/entities/auth/user";
+// import IUser from "@domain/entities/auth/user";
 
-export interface UserInput extends Optional<User, "id"> {}
-export interface UserOutput extends Required<User> {}
+interface IUserAttributes {
+  id: number;
+  email: string;
+  password: string;
+  role_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
 
-export class UserModel extends Model<User, UserInput> implements User {
+export interface UserInput extends Optional<IUserAttributes, "id"> {}
+export interface UserOutput extends Required<IUserAttributes> {}
+
+export class UserModel
+  extends Model<IUserAttributes, UserInput>
+  implements IUserAttributes
+{
   public id!: number;
   public name!: string;
   public email!: string;

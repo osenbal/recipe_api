@@ -16,22 +16,10 @@ module.exports = {
       {
         id: 1,
         recipe_id: 1,
-
         calories: 100,
-        calories_unit_id: 27,
-
-        fat: 10,
-        fat_unit_id: 27,
-
         carbs: 10,
-        carbs_unit_id: 27,
-
         protein: 10,
-        protein_unit_id: 27,
-
         sugar: 10,
-        sugar_unit_id: 27,
-
         createdAt: new Date(),
         updatedAt: new Date(),
       },

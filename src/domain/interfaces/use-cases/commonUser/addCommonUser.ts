@@ -1,5 +1,5 @@
-import CommonUser from "@domain/entities/user/commonUser";
+import ICommonUser from "@domain/entities/user/commonUser";
 
 export interface AddCommonUserUseCase {
-  execute(user: CommonUser): Promise<boolean>;
+  execute(user: ICommonUser): Promise<boolean>;
 }

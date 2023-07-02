@@ -9,8 +9,8 @@ export class ListRecipeUseCaseImpl implements ListRecipeUseCase {
     this.recipeRepository = recipeRepository;
   }
 
-  async execute(): Promise<RecipeModel[] | null> {
-    const recipes = await this.recipeRepository.getRecipes();
+  async execute(user_id?: number): Promise<any[] | null> {
+    const recipes = await this.recipeRepository.getRecipes(user_id);
 
     if (!recipes) return null;
 
@@ -18,16 +18,20 @@ export class ListRecipeUseCaseImpl implements ListRecipeUseCase {
   }
 
   async executeFilterRecipe(
+    user_id?: number,
     search?: string,
     category_id?: number,
     dish_id?: number,
-    chef_id?: number
-  ): Promise<RecipeModel[] | null> {
+    chef_id?: number,
+    filterTime?: string
+  ): Promise<any[] | null> {
     const recipes = await this.recipeRepository.getRecipeFilter(
+      user_id,
       search,
       category_id,
       dish_id,
-      chef_id
+      chef_id,
+      filterTime
     );
 
     if (!recipes) return null;

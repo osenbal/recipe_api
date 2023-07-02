@@ -1,10 +1,25 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import Nutrition from "@domain/entities/recipe/nutrition";
 
-export interface NutritionModelInput extends Optional<Nutrition, "id"> {}
-export interface NutritionModelOutput extends Required<Nutrition> {}
+interface INutritionAtributes {
+  id: number;
+  recipe_id: number;
+  calories: number;
+  protein: number;
+  carbs: number;
+  sugar: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
 
-export class NutritionModel extends Model<Nutrition, NutritionModelInput> {
+export interface NutritionModelInput
+  extends Optional<INutritionAtributes, "id"> {}
+export interface NutritionModelOutput extends Required<INutritionAtributes> {}
+
+export class NutritionModel extends Model<
+  INutritionAtributes,
+  NutritionModelInput
+> {
   public id!: number;
 
   public recipe_id!: number;
@@ -36,53 +51,26 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-
     recipe_id: {
       type: dataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-
     calories: {
       type: dataTypes.INTEGER.UNSIGNED,
       allowNull: true,
     },
-    calories_unit_id: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
     protein: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
-    protein_unit_id: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
-    fat: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
-    fat_unit_id: {
-      type: dataTypes.INTEGER.UNSIGNED,
+      type: dataTypes.FLOAT,
       allowNull: true,
     },
     carbs: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
-    carbs_unit_id: {
-      type: dataTypes.INTEGER.UNSIGNED,
+      type: dataTypes.FLOAT,
       allowNull: true,
     },
     sugar: {
-      type: dataTypes.INTEGER.UNSIGNED,
+      type: dataTypes.FLOAT,
       allowNull: true,
     },
-    sugar_unit_id: {
-      type: dataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
-
     createdAt: {
       type: dataTypes.DATE,
       allowNull: false,
@@ -100,7 +88,7 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   };
 
   const nutritionOptions = {
-    tableName: "nutrition",
+    tableName: "nutritions",
     sequelize,
   };
 

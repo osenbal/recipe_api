@@ -1,11 +1,48 @@
-export default interface User {
-  id: number;
+import Entity from "../entity.abstract";
+
+export default interface IUser {
   email: string;
   password: string;
-  role_id?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
+  role_id: number;
+}
+
+export class User extends Entity<IUser> {
+  private constructor(props: IUser, id: number | null) {
+    super(props, id);
+  }
+
+  public static create(props: IUser, id: number | null) {
+    const { email, password, role_id } = props;
+
+    return new User(
+      {
+        email,
+        password,
+        role_id,
+      },
+      id
+    );
+  }
+
+  get email(): string {
+    return this.props.email;
+  }
+
+  get roleId(): number {
+    return this.props.role_id;
+  }
+
+  set email(email: string) {
+    this.props.email = email;
+  }
+
+  set role_id(role_id: number) {
+    this.props.role_id = role_id;
+  }
+
+  set password(password: string) {
+    this.props.password = password;
+  }
 }
 
 // check required input
@@ -47,4 +84,8 @@ export const checkPasswordStringFormat = (password: string) => {
 export const hashPassword = async (bcrypt: any, password: string) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;
+};
+
+export const getNameFromEmail = (email: string): string => {
+  return email.split("@")[0];
 };

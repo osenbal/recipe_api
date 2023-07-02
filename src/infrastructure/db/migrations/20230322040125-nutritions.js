@@ -25,73 +25,23 @@ module.exports = {
       },
 
       calories: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.FLOAT,
         allowNull: true,
-      },
-
-      calories_unit_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "id",
-        },
-      },
-
-      fat: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-      },
-
-      fat_unit_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "id",
-        },
       },
 
       carbs: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.FLOAT,
         allowNull: true,
-      },
-
-      carbs_unit_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "id",
-        },
       },
 
       protein: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.FLOAT,
         allowNull: true,
-      },
-
-      protein_unit_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "id",
-        },
       },
 
       sugar: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.FLOAT,
         allowNull: true,
-      },
-
-      sugar_unit_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-        references: {
-          model: "units",
-          key: "id",
-        },
       },
 
       createdAt: {

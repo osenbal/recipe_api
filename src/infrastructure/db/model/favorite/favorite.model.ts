@@ -47,6 +47,5 @@ export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
   return FavoriteModel.init(favoriteAttributes, {
     sequelize,
     tableName: "favorites",
-    paranoid: true,
   });
 };

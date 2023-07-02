@@ -1,7 +1,4 @@
-export default interface Recipe {
-  // PK
-  id: number;
-
+export default interface IRecipe {
   // FK
   chef_id: number;
   category_id: number;
@@ -16,9 +13,4 @@ export default interface Recipe {
   cookingTime: number;
   prepTime: number;
   serving: number;
-
-  // Timestamps
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
 }

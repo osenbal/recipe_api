@@ -1,5 +1,5 @@
-import User from "@domain/entities/auth/user";
+import IUser from "@domain/entities/auth/user";
 
 export interface AssignRoleToUserUseCase {
-  execute(user: User): Promise<boolean>;
+  execute(user: IUser): Promise<boolean>;
 }

@@ -1,5 +1,5 @@
-import User from "@domain/entities/auth/user";
+import IUser from "@domain/entities/auth/user";
 
 export interface LoginUserUseCase {
-  execute(user: User): Promise<any>;
+  execute(user: IUser): Promise<any>;
 }

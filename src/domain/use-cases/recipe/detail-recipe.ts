@@ -9,8 +9,8 @@ export class DetailRecipeUseCaseImpl implements DetailRecipeUseCase {
     this.recipeRepository = recipeRepository;
   }
 
-  async executeDetailById(id: number): Promise<RecipeModel | null> {
-    const recipe = await this.recipeRepository.getRecipeById(id);
+  async executeDetailById(id: number, user_id?: number): Promise<any | null> {
+    const recipe = await this.recipeRepository.getRecipeById(id, user_id);
     if (!recipe) return null;
     // sort instructions by order
     return recipe;

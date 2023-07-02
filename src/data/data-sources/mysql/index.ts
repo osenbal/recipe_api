@@ -15,6 +15,7 @@ import MySQLInstructionDataSource from "./recipe/mysql-instruction-data-source";
 import MySQLRecipeDataSource from "./recipe/mysql-recipe-data-source";
 import MySQLRecipeIngredientDataSource from "./recipe/mysql-recipeIngredient-data-source";
 import MySQLUnitDataSource from "./recipe/mysql-unit-data-source";
+import MySQLNutritionDataSource from "./recipe/mysql-nutrition-data-source";
 
 import MySQLFavoriteDataSource from "./favorite/mysql-favorite-data-source";
 
@@ -31,8 +32,11 @@ import {
   Recipe,
   RecipeIngredient,
   Favorite,
+  Nutrition,
 } from "../../../infrastructure/db/model/";
 import { Transaction } from "sequelize";
+
+import IUser from "@domain/entities/auth/user";
 
 export default class MYSQLDataSources {
   private static instance: MYSQLDataSources;
@@ -51,7 +55,7 @@ export default class MYSQLDataSources {
       findAll: (query: any) => User.findAll(query),
       findOne: (query: any) => User.findOne(query),
       findPk: (id: number) => User.findByPk(id),
-      create: (data: any, t: Transaction) =>
+      create: (data: IUser, t: Transaction) =>
         User.create(data, { transaction: t }),
       updateById: (id: number, data: object, t: Transaction) =>
         User.update(data, { where: { id }, transaction: t }),
@@ -233,6 +237,8 @@ export default class MYSQLDataSources {
         Favorite.update(data, { where: { id }, transaction: t }),
       destroyById: (id: number, t?: Transaction) =>
         Favorite.destroy({ where: { id }, transaction: t }),
+      destroyByQuery: (query: any, t?: Transaction) =>
+        Favorite.destroy({ ...query, transaction: t }),
     };
 
     return new MySQLFavoriteDataSource(favoriteDatabase);
@@ -252,5 +258,21 @@ export default class MYSQLDataSources {
     };
 
     return new MySQLUnitDataSource(unitDatabase);
+  }
+
+  public getNutritionDataSource(): MySQLNutritionDataSource {
+    const nutritionDatabase: SQLDatabaseWrapper = {
+      findAll: (query: any) => Nutrition.findAll(query),
+      findOne: (query: any) => Nutrition.findOne(query),
+      findPk: (id: number) => Nutrition.findByPk(id),
+      create: (data: any, t?: Transaction) =>
+        Nutrition.create(data, { transaction: t }),
+      updateById: (id: number, data: object, t?: Transaction) =>
+        Nutrition.update(data, { where: { id }, transaction: t }),
+      destroyById: (id: number, t?: Transaction) =>
+        Nutrition.destroy({ where: { id }, transaction: t }),
+    };
+
+    return new MySQLNutritionDataSource(nutritionDatabase);
   }
 }

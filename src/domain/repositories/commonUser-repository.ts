@@ -1,5 +1,5 @@
 import { CommonUserRepository } from "../interfaces/repositories/commonUser-repository";
-import CommonUser from "../entities/user/commonUser";
+import ICommonUser, { CommonUser } from "../entities/user/commonUser";
 import { CommonUserModel } from "@infrastructure/db/model/commonUser.model";
 import { CommonUserDataSource } from "@data/interfaces/data-sources/commonUser-data-source";
 import { Transaction } from "sequelize";
@@ -12,7 +12,7 @@ export class CommonUserRepositoryImpl implements CommonUserRepository {
   }
 
   async addCommonUser(
-    CommonUser: CommonUser,
+    CommonUser: ICommonUser,
     t?: Transaction
   ): Promise<CommonUserModel> {
     const result = await this.commonUserDataSource.addCommonUser(CommonUser, t);
@@ -33,8 +33,22 @@ export class CommonUserRepositoryImpl implements CommonUserRepository {
     return result;
   }
 
-  async updateCommonUser(data: CommonUser, t?: Transaction): Promise<boolean> {
-    const result = await this.commonUserDataSource.updateCommonUser(data, t);
-    return result;
+  async updateCommonUser(
+    data: CommonUser,
+    context: { user_id: number },
+    t?: Transaction
+  ): Promise<CommonUser | null> {
+    const foundCommonUser =
+      await this.commonUserDataSource.getCommonUserByUserId(context.user_id);
+
+    if (!foundCommonUser) {
+      return null;
+    }
+
+    foundCommonUser.set(data.getProps());
+
+    const updatedCommonUser = await foundCommonUser.save({ transaction: t });
+
+    return updatedCommonUser.toJSON() as CommonUser;
   }
 }

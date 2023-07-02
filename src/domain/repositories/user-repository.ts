@@ -1,4 +1,4 @@
-import User from "@domain/entities/auth/user";
+import IUser, { User } from "@domain/entities/auth/user";
 import { UserDataSource } from "@data/interfaces/data-sources/user-data-source";
 import { UserModel } from "@infrastructure/db/model/users.model";
 import { UserRepository } from "@domain/interfaces/repositories/user-repository";
@@ -11,8 +11,8 @@ export class UserRepositoryImpl implements UserRepository {
     this.userDataSources = userDataSources;
   }
 
-  async registerUser(user: User, t?: Transaction): Promise<UserModel> {
-    const newUser = await this.userDataSources.register(user, t);
+  async registerUser(user: IUser, t?: Transaction): Promise<UserModel> {
+    const newUser = await this.userDataSources.addUser(user, t);
     return newUser;
   }
 
@@ -32,7 +32,19 @@ export class UserRepositoryImpl implements UserRepository {
     return await this.userDataSources.getUserWithRoleByEmail(email);
   }
 
-  async updateUser(data: User, t?: Transaction): Promise<boolean> {
-    return await this.userDataSources.updateUser(data, t);
+  async updateUser(
+    data: User,
+    context: { id: number },
+    t?: Transaction
+  ): Promise<User | null> {
+    const foundUser = await this.userDataSources.getUserById(context.id);
+    if (!foundUser) {
+      return null;
+    }
+
+    foundUser.set(data.getProps());
+    const updatedUser = await foundUser.save({ transaction: t });
+
+    return updatedUser.toJSON() as User;
   }
 }

@@ -1,10 +1,33 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import Recipe from "@domain/entities/recipe/recipe";
+interface IRecipeAttributes {
+  // PK
+  id: number;
 
-export interface RecipeModelInput extends Optional<Recipe, "id"> {}
-export interface RecipeModelrOutput extends Required<Recipe> {}
+  // FK
+  chef_id: number;
+  category_id: number;
+  dish_id: number;
 
-export class RecipeModel extends Model<Recipe, RecipeModelInput> {
+  // Attributes
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  video_url?: string;
+
+  cookingTime: number;
+  prepTime: number;
+  serving: number;
+
+  // Timestamps
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
+export interface RecipeModelInput extends Optional<IRecipeAttributes, "id"> {}
+export interface RecipeModelrOutput extends Required<IRecipeAttributes> {}
+
+export class RecipeModel extends Model<IRecipeAttributes, RecipeModelInput> {
   public id!: number;
 
   public chef_id!: number;

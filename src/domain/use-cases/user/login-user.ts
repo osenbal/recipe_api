@@ -1,4 +1,4 @@
-import User from "@domain/entities/auth/user";
+import IUser from "@domain/entities/auth/user";
 import { LoginUserUseCase } from "@domain/interfaces/use-cases/user/login-user";
 import { UserRepository } from "@domain/interfaces/repositories/user-repository";
 import {
@@ -16,7 +16,7 @@ export class LoginUser implements LoginUserUseCase {
     this.userRepository = userRepository;
   }
 
-  async execute(user: User): Promise<any> {
+  async execute(user: IUser): Promise<any> {
     // check user exist and validation password user
     if (!checkEmailStringFormat(user.email)) {
       throw new HTTP403Error("Invalid email");

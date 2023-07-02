@@ -1,6 +1,6 @@
 // import { NoSQLDatabaseWrapper } from "@data/interfaces/data-sources/NoSQL-database-wrapper";
 // import { UserDataSource } from "@data/interfaces/data-sources/user-data-source";
-// import User from "@domain/entities/user";
+// import IUser from "@domain/entities/user";
 
 // export class MongoDBUserDataSource implements UserDataSource {
 //   private db: NoSQLDatabaseWrapper;

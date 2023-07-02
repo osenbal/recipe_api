@@ -1,5 +1,5 @@
 import { RegisterUser } from "./register-user";
-import User from "../../entities/auth/user";
+import IUser from "../../entities/auth/user";
 import { UserRepositoryImpl } from "../../../domain/repositories/user-repository";
 import { RoleRepositoryImpl } from "../../../domain/repositories/role-repository";
 import { ChefRepositoryImpl } from "../../../domain/repositories/chef-repository";
@@ -32,7 +32,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Invalid input");
   });
 
@@ -44,7 +44,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Invalid input");
   });
 
@@ -56,7 +56,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Invalid input");
   });
 
@@ -68,7 +68,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Invalid email");
   });
 
@@ -80,7 +80,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Email is already taken");
   });
 
@@ -92,7 +92,7 @@ describe("USE CASE | Register user", () => {
     };
 
     await expect(
-      registerUser.executeRegisterCommonUser(user as User)
+      registerUser.executeRegisterCommonUser(user as IUser)
     ).rejects.toThrow("Invalid password");
   });
 
@@ -104,7 +104,7 @@ describe("USE CASE | Register user", () => {
       role_id: 1,
     };
 
-    const result = await registerUser.executeRegisterCommonUser(user as User);
+    const result = await registerUser.executeRegisterCommonUser(user as IUser);
     expect(result).toBeTruthy();
   });
 });

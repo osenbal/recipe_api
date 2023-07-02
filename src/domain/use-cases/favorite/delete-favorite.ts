@@ -8,9 +8,10 @@ export class DeleteFavoriteUseCaseImpl implements DeleteFavoriteUseCase {
     this.favoriteRepository = favoriteRepository;
   }
 
-  async execute(favorite_id: number): Promise<boolean> {
+  async execute(favorite_id: number, user_id: number): Promise<boolean> {
     const result = await this.favoriteRepository.deleteFavoriteById(
-      favorite_id
+      favorite_id,
+      user_id
     );
     return result;
   }

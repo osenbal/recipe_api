@@ -15,25 +15,19 @@ module.exports = {
     await queryInterface.bulkInsert("dishs", [
       {
         id: 1,
-        name: "breakfast",
+        name: "beef dish",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         id: 2,
-        name: "lunch",
+        name: "vegetable dish",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         id: 3,
-        name: "dinner",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 4,
-        name: "snack",
+        name: "fish dish",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

@@ -1,4 +1,4 @@
-import User from "@domain/entities/auth/user";
+import IUser, { User } from "@domain/entities/auth/user";
 import { UserModel } from "@infrastructure/db/model/users.model";
 import { RoleModel } from "@infrastructure/db/model/role.model";
 import { UserDataSource } from "@data/interfaces/data-sources/user-data-source";
@@ -12,7 +12,7 @@ export default class MySQLUserDataSource implements UserDataSource {
     this.db = db;
   }
 
-  async register(user: User, t?: Transaction): Promise<UserModel> {
+  async addUser(user: IUser, t?: Transaction): Promise<UserModel> {
     const result = await this.db.create(user, t);
     return result;
   }
@@ -54,9 +54,14 @@ export default class MySQLUserDataSource implements UserDataSource {
     return result;
   }
 
-  async updateUser(user: User, t?: Transaction): Promise<boolean> {
-    if (!this.db.updateById) return false;
-    const result = await this.db.updateById(user.id, user, t);
-    return result !== null;
+  async updateUser(
+    data: User,
+    context: { id: number },
+    t?: Transaction
+  ): Promise<User | null> {
+    if (!this.db.updateById) return null;
+
+    const result = await this.db.updateById(context.id, data, t);
+    return result;
   }
 }

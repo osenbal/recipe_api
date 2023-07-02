@@ -6,7 +6,7 @@ import { RecipeIngredientRepository } from "@domain/interfaces/repositories/reci
 import { InstructionRepositry } from "@domain/interfaces/repositories/recipe/instruction-repository";
 import { MySQLTransactionsUtilRepository } from "@domain/interfaces/repositories/utils/mysqlTransaction-util-repository";
 import { HTTP404Error } from "@domain/exeptions/error-exeption";
-import Recipe from "@domain/entities/recipe/recipe";
+import IRecipe from "@domain/entities/recipe/recipe";
 import RecipeIngredient from "@domain/entities/recipe/recipe_ingredient";
 import Instruction from "@domain/entities/recipe/instruction";
 
@@ -47,8 +47,7 @@ export class UpdateRecipeUseCaseImpl implements UpdateRecipeUseCase {
       thumbnail_url = recipeOld.thumbnail_url;
     }
 
-    const recipe: Recipe = {
-      id: recipe_id,
+    const recipe: IRecipe = {
       chef_id: recipeOld.chef_id,
       category_id: data.category_id ? data.category_id : recipeOld.category_id,
       dish_id: data.dish_id ? data.dish_id : recipeOld.dish_id,
@@ -59,7 +58,6 @@ export class UpdateRecipeUseCaseImpl implements UpdateRecipeUseCase {
       cookingTime: data.cookingTime ? data.cookingTime : recipeOld.cookingTime,
       prepTime: data.prepTime ? data.prepTime : recipeOld.prepTime,
       video_url: data.video_url ? data.video_url : recipeOld.video_url,
-      updatedAt: new Date(),
     };
 
     const recipeIngredients: RecipeIngredient[] = data.ingredients.map(

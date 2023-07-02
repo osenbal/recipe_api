@@ -1,27 +1,19 @@
 import { Router } from "express";
-import { AssignRoleToUserUseCase } from "@domain/interfaces/use-cases/user/assign-role-to-user";
 import { GetCurrentProfileUseCase } from "@domain/interfaces/use-cases/user/get-current-profile";
+import { UpdateUserUseCase } from "@domain/interfaces/use-cases/user/update-user";
 import UserController from "../../infrastructure/controllers/user-controller";
 import validateAccessToken from "../../domain/middlewares/validateAccessToken-middleware";
-import authorizationMiddleware from "../../domain/middlewares/authorization-middleware";
 
 export default function UserRouter(
-  assignRoleToUser: AssignRoleToUserUseCase,
-  getCurrentProfile: GetCurrentProfileUseCase
+  getCurrentProfile: GetCurrentProfileUseCase,
+  updateUser: UpdateUserUseCase
 ) {
   const router = Router();
-  const userController = new UserController(
-    assignRoleToUser,
-    getCurrentProfile
-  );
+  const userController = new UserController(getCurrentProfile, updateUser);
 
-  router.get(
-    "/me/:user_id",
-    validateAccessToken,
-    authorizationMiddleware,
-    userController.getMe()
-  );
+  router.get("/me", validateAccessToken, userController.getMe());
 
+  // router.patch("/me", validateAccessToken, userController.updateMe());
   // router.patch(
   //   "/assign-role/:user_id",
   //   validateAccessToken,

@@ -1,10 +1,10 @@
-import CommonUser from "@domain/entities/user/commonUser";
+import ICommonUser, { CommonUser } from "@domain/entities/user/commonUser";
 import { CommonUserModel } from "@infrastructure/db/model/commonUser.model";
 import { Transaction } from "sequelize";
 
 export interface CommonUserDataSource {
   addCommonUser(
-    commonUser: CommonUser,
+    commonUser: ICommonUser,
     t?: Transaction
   ): Promise<CommonUserModel>;
   getCommonUserByUserId(user_id: number): Promise<CommonUserModel | null>;

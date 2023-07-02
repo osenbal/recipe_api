@@ -1,5 +1,5 @@
 import { LoginUser } from "./login-user";
-import User from "../../entities/auth/user";
+import IUser from "../../entities/auth/user";
 import { UserRepositoryImpl } from "../../../domain/repositories/user-repository";
 import MYSQLDataSources from "../../../data/data-sources/mysql";
 
@@ -18,7 +18,7 @@ describe("USE CASE | Login user", () => {
       password: "iqbal123",
     };
 
-    await expect(loginUser.execute(user as User)).rejects.toThrow(
+    await expect(loginUser.execute(user as IUser)).rejects.toThrow(
       "Invalid email"
     );
   });
@@ -30,7 +30,7 @@ describe("USE CASE | Login user", () => {
       password: "iqbal123",
     };
 
-    await expect(loginUser.execute(user as User)).rejects.toThrow(
+    await expect(loginUser.execute(user as IUser)).rejects.toThrow(
       "User not found"
     );
   });
@@ -42,7 +42,7 @@ describe("USE CASE | Login user", () => {
       password: "ngasal",
     };
 
-    await expect(loginUser.execute(user as User)).rejects.toThrow(
+    await expect(loginUser.execute(user as IUser)).rejects.toThrow(
       "Invalid password"
     );
   });
@@ -54,7 +54,7 @@ describe("USE CASE | Login user", () => {
       password: "test12345",
     };
 
-    const result = await loginUser.execute(user as User);
+    const result = await loginUser.execute(user as IUser);
     expect(result).toHaveProperty("accessToken");
     expect(result).toHaveProperty("refreshToken");
   });

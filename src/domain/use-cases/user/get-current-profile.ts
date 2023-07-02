@@ -37,7 +37,7 @@ export class GetCurrentUserUseCaseImpl implements GetCurrentProfileUseCase {
         user_id
       );
       if (!commonUser) {
-        throw new HTTP404Error("Common user not found");
+        throw new HTTP404Error("User not found");
       }
       return { user: { ...user.dataValues, ...commonUser.dataValues } };
     }

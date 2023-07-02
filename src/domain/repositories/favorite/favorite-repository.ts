@@ -18,8 +18,16 @@ export class FavoriteRepositoryImpl implements FavoriteRepository {
     return result;
   }
 
-  async deleteFavoriteById(id: number, t?: any): Promise<boolean> {
-    const result = await this.favoriteDataSource.deleteFavoriteById(id, t);
+  async deleteFavoriteById(
+    id: number,
+    user_id: number,
+    t?: any
+  ): Promise<boolean> {
+    const result = await this.favoriteDataSource.deleteFavoriteById(
+      id,
+      user_id,
+      t
+    );
     return result;
   }
 

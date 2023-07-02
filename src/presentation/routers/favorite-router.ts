@@ -26,7 +26,7 @@ export default function FavoriteRouter(
   );
   router.post("/", validateAccessToken, favoriteController.addFavoriteRecipe());
   router.delete(
-    "/:favorite_id",
+    "/",
     validateAccessToken,
     favoriteController.deleteFavoriteRecipe()
   );

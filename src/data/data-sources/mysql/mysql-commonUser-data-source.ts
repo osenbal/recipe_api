@@ -1,4 +1,4 @@
-import CommonUser from "@domain/entities/user/commonUser";
+import ICommonUser, { CommonUser } from "@domain/entities/user/commonUser";
 import { CommonUserModel } from "@infrastructure/db/model/commonUser.model";
 import { CommonUserDataSource } from "@data/interfaces/data-sources/commonUser-data-source";
 import SQLDatabaseWrapper from "@data/interfaces/data-sources/SQL-database-wrapper";
@@ -12,7 +12,7 @@ export default class MySQLCommonUserDataSource implements CommonUserDataSource {
   }
 
   async addCommonUser(
-    commonUser: CommonUser,
+    commonUser: ICommonUser,
     t?: Transaction
   ): Promise<CommonUserModel> {
     const result = await this.db.create(commonUser, t);

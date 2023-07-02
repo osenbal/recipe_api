@@ -1,10 +1,18 @@
 import { DataTypes, Sequelize, Model, Optional } from "sequelize";
-import Chef from "@domain/entities/user/chef";
+interface ChefAttributes {
+  id: number;
+  user_id: number;
+  name: string;
+  profile_url: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
 
-export interface ChefModelInput extends Optional<Chef, "id"> {}
-export interface ChefModelrOutput extends Required<Chef> {}
+export interface ChefModelInput extends Optional<ChefAttributes, "id"> {}
+export interface ChefModelrOutput extends Required<ChefAttributes> {}
 
-export class ChefModel extends Model<Chef, ChefModelInput> {
+export class ChefModel extends Model<ChefAttributes, ChefModelInput> {
   public id!: number;
   public user_id!: string;
   public name!: string;

@@ -15,6 +15,7 @@ import IngredientModel from "./recipe/ingredient.model";
 import RecipeIngredientModel from "./recipe/recipe_ingredient.model";
 import UnitModel from "./recipe/unit.model";
 import FavoriteModel from "./favorite/favorite.model";
+import NutritionModel from "./recipe/nutrition.model";
 
 export const Role = RoleSequelize(sequelize, DataTypes);
 export const User = UserSequelize(sequelize, DataTypes);
@@ -31,6 +32,8 @@ export const Ingredient = IngredientModel(sequelize, DataTypes);
 export const Unit = UnitModel(sequelize, DataTypes);
 export const Favorite = FavoriteModel(sequelize, DataTypes);
 export const RecipeIngredient = RecipeIngredientModel(sequelize, DataTypes);
+
+export const Nutrition = NutritionModel(sequelize, DataTypes);
 
 // auth
 User.belongsTo(Role, {
@@ -59,6 +62,7 @@ CommonUser.belongsTo(User, {
 
 Chef.belongsTo(User, {
   foreignKey: "user_id",
+  as: "user",
 });
 
 // recipe
@@ -144,7 +148,7 @@ RecipeIngredient.belongsTo(Unit, {
 // relation recipe with favorite
 Recipe.hasMany(Favorite, {
   foreignKey: "recipe_id",
-  as: "recipe",
+  as: "favorite",
 });
 Favorite.belongsTo(Recipe, {
   foreignKey: "recipe_id",
@@ -157,4 +161,15 @@ User.hasMany(Favorite, {
 });
 Favorite.belongsTo(User, {
   foreignKey: "user_id",
+});
+
+// relation recipe with nutrition
+Recipe.hasOne(Nutrition, {
+  foreignKey: "recipe_id",
+  as: "nutrition",
+});
+
+Nutrition.belongsTo(Recipe, {
+  foreignKey: "recipe_id",
+  as: "recipe",
 });
