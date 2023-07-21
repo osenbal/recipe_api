@@ -4,7 +4,7 @@
   "description": "auth service with clean architecture",
   "scripts": {
     "test": "NODE_ENV=test jest --watchAll --collectCoverage",
-    "build": "tsc && NODE_ENV=production",
+    "build": "tsc && NODE_ENV=production && express build --output public",
     "start": "tsc && NODE_ENV=production node build/main.js",
     "dev": "tsc && NODE_ENV=development nodemon -q build/main.js",
     "db:seed": "npx sequelize-cli db:seed:all",
