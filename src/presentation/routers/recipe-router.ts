@@ -42,15 +42,17 @@ export default function RecipeRouter(
     checkPermissions(PERMISSIONS.CREATE_RECIPE),
     recipeController.create()
   );
+
+  router.get("/category", recipeController.listCategory());
+  router.get("/dish", recipeController.listDish());
+  router.get("/unit", recipeController.listUnit());
+  router.get("/ingredient", recipeController.getListIngredient());
+
   router.get(
     "/filter",
     validateAccessTokenIfExist,
     recipeController.filterList()
   );
-  router.get("/category", recipeController.listCategory());
-  router.get("/dish", recipeController.listDish());
-  router.get("/unit", recipeController.listUnit());
-  router.get("/ingredient", recipeController.getListIngredient());
 
   router.get(
     "/:recipe_id",

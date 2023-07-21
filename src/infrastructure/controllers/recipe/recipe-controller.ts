@@ -85,7 +85,7 @@ export default class RecipeController {
         chef_id ? query.push(Number(chef_id)) : query.push(undefined);
         filterTime ? query.push(filterTime) : query.push(undefined);
 
-        const user_id = req.body.userId;
+        const user_id = req.body?.userId;
 
         const result = await this.listRecipe
           .executeFilterRecipe(user_id, ...query)

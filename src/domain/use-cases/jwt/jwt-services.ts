@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import JwtPayload from "@domain/entities/auth/jwt-payload";
 import { JwtServiceUseCase } from "@domain/interfaces/use-cases/jwt/jwt-services";
 import jwt from "jsonwebtoken";
+
 dotenv.config();
 export class JwtService implements JwtServiceUseCase {
   private readonly accessTokenKey: string;
@@ -28,12 +29,20 @@ export class JwtService implements JwtServiceUseCase {
     });
   }
 
-  public verifyAccessToken(token: string): JwtPayload {
-    return jwt.verify(token, this.accessTokenKey) as JwtPayload;
+  public verifyAccessToken(token: string): JwtPayload | boolean {
+    try {
+      return jwt.verify(token, this.accessTokenKey) as JwtPayload;
+    } catch (error) {
+      return false;
+    }
   }
 
-  public verifyRefreshToken(token: string): JwtPayload {
-    return jwt.verify(token, this.refreshTokenKey) as JwtPayload;
+  public verifyRefreshToken(token: string): JwtPayload | boolean {
+    try {
+      return jwt.verify(token, this.refreshTokenKey) as JwtPayload;
+    } catch (error) {
+      return false;
+    }
   }
 
   public decodeAccessToken(token: string): JwtPayload {

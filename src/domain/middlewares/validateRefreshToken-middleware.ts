@@ -22,8 +22,13 @@ export default async function validateRefreshToken(
     const decoded = jwtService.verifyRefreshToken(bearerToken);
 
     // if token not valid
-    if (!decoded) {
-      throw new HTTP401Error("Token is not valid");
+    if (!decoded || typeof decoded === "boolean") {
+      res.status(401).json({
+        status: 401,
+        message: "Token is not valid",
+      });
+
+      return;
     }
 
     // add user id to request

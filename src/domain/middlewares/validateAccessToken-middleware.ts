@@ -22,11 +22,14 @@ export default async function validateAccessToken(
     const decoded = jwtService.verifyAccessToken(bearerToken);
 
     // if token not valid
-    if (!decoded) {
-      throw new HTTP401Error("Token is not valid");
-    }
+    if (!decoded || typeof decoded === "boolean") {
+      res.status(401).json({
+        status: 401,
+        message: "Token is not valid",
+      });
 
-    console.log("USER ID === ", decoded.user_id);
+      return;
+    }
 
     req.body.userId = decoded.user_id;
     req.body.roleId = decoded.role_id;
