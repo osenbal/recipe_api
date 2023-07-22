@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AddRecipeToFavoriteUseCase } from "@domain/interfaces/use-cases/favorite/add-favorite";
 import { ListFavoriteUseCase } from "@domain/interfaces/use-cases/favorite/list-favorite";
 import { DeleteFavoriteUseCase } from "@domain/interfaces/use-cases/favorite/delete-favorite";
-import { ResponseObj } from "@utils/response";
+import { ResponseObj } from "../../../utils/response";
 import { HTTP404Error } from "@domain/exeptions/error-exeption";
 
 export default class FavoriteController {

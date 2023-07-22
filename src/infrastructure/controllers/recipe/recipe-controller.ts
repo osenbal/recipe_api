@@ -7,7 +7,7 @@ import { DeleteRecipeUseCase } from "@domain/interfaces/use-cases/recipe/delete-
 import { ListCategoryDishUnitUseCase } from "@domain/interfaces/use-cases/recipe/list-category-dish-unit";
 import { ListIngredientUseCase } from "@domain/interfaces/use-cases/recipe/list-ingredient";
 import { ICreateRecipeRequestBody } from "@domain/interfaces/http/request-body/recipe";
-import { ResponseObj } from "@utils/response";
+import { ResponseObj } from "../../../utils/response";
 import { HTTP404Error } from "@domain/exeptions/error-exeption";
 
 export default class RecipeController {
