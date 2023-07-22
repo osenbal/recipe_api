@@ -56,11 +56,11 @@
     "typescript": "^4.9.4"
   },
   "_moduleAliases": {
-    "@data": "src/data",
-    "@domain": "src/domain",
-    "presentation": "src/presentation",
-    "infrastructure": "src/infrastructure",
-    "utils": "src/utils",
-    "constants": "src/constants"
+    "@data": "build/data",
+    "@domain": "build/domain",
+    "@presentation": "build/presentation",
+    "@infrastructure": "build/infrastructure",
+    "@utils": "build/utils",
+    "@constants": "build/constants"
   }
 }
