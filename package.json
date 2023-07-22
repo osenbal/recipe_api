@@ -54,5 +54,13 @@
     "tsc-alias": "^1.8.5",
     "tsconfig-paths": "^4.1.1",
     "typescript": "^4.9.4"
+  },
+  "_moduleAliases": {
+    "@data": "src/data",
+    "@domain": "src/domain",
+    "presentation": "src/presentation",
+    "infrastructure": "src/infrastructure",
+    "utils": "src/utils",
+    "constants": "src/constants"
   }
 }
